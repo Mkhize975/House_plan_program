@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamDwell - 3D Design Tool</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        .designer-tool {
+            height: calc(100vh - 64px);
+        }
+        .sidebar-item:hover {
+            background-color: #f3f4f6;
+        }
+        .sidebar-item.active {
+            background-color: #e5e7eb;
+            border-left: 4px solid #3b82f6;
+        }
+        #main-canvas {
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <i data-feather="home" class="text-blue-600 w-5 h-5 mr-2"></i>
+                    <span class="text-lg font-bold text-gray-800">DreamDwell</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="flex items-center text-sm text-gray-600 hover:text-blue-600">
+                        <i data-feather="save" class="w-4 h-4 mr-1"></i> Save
+                    </button>
+                    <button class="flex items-center text-sm text-gray-600 hover:text-blue-600">
+                        <i data-feather="share-2" class="w-4 h-4 mr-1"></i> Export
+                    </button>
+                    <div class="w-px h-6 bg-gray-200"></div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                        View in 3D
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-16 designer-tool flex">
+        <!-- Sidebar -->
+        <div class="w-16 md:w-64 bg-white border-r border-gray-200 flex-shrink-0 overflow-y-auto">
+            <div class="p-4 border-b border-gray-200">
+                <h2 class="font-bold text-gray-800 hidden md:block">Design Tools</h2>
+            </div>
+            <div class="space-y-1 p-2">
+                <button class="sidebar-item active w-full flex items-center p-2 rounded-md text-gray-700">
+                    <i data-feather="box" class="w-5 h-5 mr-2"></i>
+                    <span class="hidden md:inline">Rooms</span>
+                </button>
+                <button class="sidebar-item w-full flex items-center p-2 rounded-md text-gray-700">
+                    <i data-feather="car" class="w-5 h-5 mr-2"></i>
+                    <span class="hidden md:inline">Garage</span>
+                </button>
+                <button class="sidebar-item w-full flex items-center p-2 rounded-md text-gray-700">
+                    <i data-feather="square" class="w-5 h-5 mr-2"></i>
+                    <span class="hidden md:inline">Walls</span>
+                </button>
+                <button class="sidebar-item w-full flex items-center p-2 rounded-md text-gray-700">
+                    <i data-feather="door-open" class="w-5 h-5 mr-2"></i>
+                    <span class="hidden md:inline">Doors</span>
+                </button>
+                <button class="sidebar-item w-full flex items-center p-2 rounded-md text-gray-700">
+                    <i data-feather="maximize-2" class="w-5 h-5 mr-2"></i>
+                    <span class="hidden md:inline">Windows</span>
+                </button>
+                <button class="sidebar-item w-full flex items-center p-2 rounded-md text-gray-700">
+                    <i data-feather="layers" class="w-5 h-5 mr-2"></i>
+                    <span class="hidden md:inline">Floors</span>
+                </button>
+            </div>
+            <div class="p-4 border-t border-gray-200 mt-4 hidden md:block">
+                <h3 class="font-bold text-gray-800 mb-2">Room Types</h3>
+                <div class="space-y-1">
+                    <button class="w-full text-left text-sm p-2 rounded hover:bg-gray-100 text-gray-700">
+                        Living Room
+                    </button>
+                    <button class="w-full text-left text-sm p-2 rounded hover:bg-gray-100 text-gray-700">
+                        Kitchen
+                    </button>
+                    <button class="w-full text-left text-sm p-2 rounded hover:bg-gray-100 text-gray-700">
+                        Bedroom
+                    </button>
+                    <button class="w-full text-left text-sm p-2 rounded hover:bg-gray-100 text-gray-700">
+                        Bathroom
+                    </button>
+                    <button class="w-full text-left text-sm p-2 rounded hover:bg-gray-100 text-gray-700">
+                        Dining Room
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="flex-1 p-4 overflow-auto">
+            <div class="bg-white rounded-lg shadow-sm h-full w-full relative">
+                <canvas id="main-canvas" class="w-full h-full"></canvas>
+                <!-- Toolbar -->
+                <div class="absolute top-4 left-4 flex space-x-2">
+                    <button class="bg-white p-2 rounded-md shadow-md hover:bg-gray-100" title="Select">
+                        <i data-feather="mouse-pointer" class="w-4 h-4"></i>
+                    </button>
+                    <button class="bg-white p-2 rounded-md shadow-md hover:bg-gray-100" title="Drag">
+                        <i data-feather="move" class="w-4 h-4"></i>
+                    </button>
+                    <button class="bg-white p-2 rounded-md shadow-md hover:bg-gray-100" title="Zoom In">
+                        <i data-feather="zoom-in" class="w-4 h-4"></i>
+                    </button>
+                    <button class="bg-white p-2 rounded-md shadow-md hover:bg-gray-100" title="Zoom Out">
+                        <i data-feather="zoom-out" class="w-4 h-4"></i>
+                    </button>
+                    <button id="ai-generate-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md shadow-md flex items-center" title="AI Generate">
+                        <i data-feather="zap" class="w-4 h-4 mr-1"></i>
+                        <span class="text-xs">AI Generate</span>
+                    </button>
+                </div>
+<!-- Measurements -->
+                <div class="absolute bottom-4 left-4 bg-white bg-opacity-90 px-3 py-2 rounded-md shadow-md">
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <div class="text-xs text-gray-500">Width</div>
+                            <div class="font-medium">24 ft</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">Length</div>
+                            <div class="font-medium">36 ft</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">Area</div>
+                            <div class="font-medium">864 sq ft</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Room Info -->
+                <div class="absolute top-4 right-4 bg-white p-4 rounded-md shadow-md w-64">
+                    <h3 class="font-bold text-gray-800 mb-2">Room Properties</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Room Type</label>
+                            <select class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm">
+                                <option>Living Room</option>
+                                <option>Kitchen</option>
+                                <option>Bedroom</option>
+                                <option>Bathroom</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Width (ft)</label>
+                                <input type="number" value="12" class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Length (ft)</label>
+                                <input type="number" value="15" class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Wall Color</label>
+                            <div class="flex space-x-2">
+                                <div class="w-6 h-6 rounded-full bg-blue-200 border border-gray-300"></div>
+                                <div class="w-6 h-6 rounded-full bg-gray-200 border border-gray-300"></div>
+                                <div class="w-6 h-6 rounded-full bg-yellow-100 border border-gray-300"></div>
+                                <div class="w-6 h-6 rounded-full bg-red-100 border border-gray-300"></div>
+                            </div>
+                        </div>
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 rounded-md transition">
+                            Apply Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const AI_API_URL = 'https://api.openai.com/v1/chat/completions';
+            
+            // AI Generation Function
+            async function generateAIBlueprint(prompt) {
+                try {
+                    const response = await axios.post(AI_API_URL, {
+                        model: "gpt-4-vision-preview",
+                        messages: [{
+                            role: "user",
+                            content: [
+                                {
+                                    type: "text",
+                                    text: `Generate a detailed 3D house blueprint based on: ${prompt}. Include rooms, walls, doors and measurements. Return as SVG path data.`
+                                }
+                            ]
+                        }],
+                        max_tokens: 2000
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer YOUR_OPENAI_API_KEY`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    return response.data.choices[0].message.content;
+                } catch (error) {
+                    console.error('AI Generation Error:', error);
+                    return null;
+                }
+            }
+
+            // AI Generate Button
+            document.getElementById('ai-generate-btn').addEventListener('click', async () => {
+                const prompt = prompt('Describe your dream house (e.g. "3 bedroom, 2 bath with garage")');
+                if (prompt) {
+                    const loading = document.createElement('div');
+                    loading.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                    loading.innerHTML = `
+                        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                            <div class="flex items-center justify-center mb-4">
+                                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                            </div>
+                            <p class="text-center text-gray-700">AI is generating your blueprint...</p>
+                        </div>
+                    `;
+                    document.body.appendChild(loading);
+
+                    const blueprintData = await generateAIBlueprint(prompt);
+                    
+                    loading.remove();
+                    
+                    if (blueprintData) {
+                        // Parse and render SVG paths
+                        renderAIBlueprint(blueprintData);
+                        alert('AI blueprint generated successfully!');
+                    } else {
+                        alert('Failed to generate blueprint. Please try again.');
+                    }
+                }
+            });
+
+            function renderAIBlueprint(svgData) {
+                // Parse SVG data and render on canvas
+                // This is a simplified example - actual implementation would parse SVG paths
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Example of parsing simple SVG paths
+                const paths = svgData.match(/d="([^"]*)"/g);
+                if (paths) {
+                    ctx.strokeStyle = '#3b82f6';
+                    ctx.lineWidth = 2;
+                    paths.forEach(path => {
+                        const d = path.match(/d="([^"]*)"/)[1];
+                        // Simplified path rendering - would use proper SVG parser in production
+                        const commands = d.split(' ');
+                        ctx.beginPath();
+                        for (let i = 0; i < commands.length; i++) {
+                            const cmd = commands[i];
+                            if (cmd === 'M') {
+                                const [x, y] = commands[i+1].split(',').map(Number);
+                                ctx.moveTo(x, y);
+                                i++;
+                            } else if (cmd === 'L') {
+                                const [x, y] = commands[i+1].split(',').map(Number);
+                                ctx.lineTo(x, y);
+                                i++;
+                            }
+                        }
+                        ctx.stroke();
+                    });
+                }
+            }
+
+// Initialize canvas with basic drawing context
+            const canvas = document.getElementById('main-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            function resizeCanvas() {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+                drawBlueprint();
+            }
+            
+            // Draw a simple blueprint
+            function drawBlueprint() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Set styling
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 2;
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.05)';
+                
+                // Draw a simple house outline
+                const margin = 40;
+                const houseWidth = canvas.width - margin * 2;
+                const houseHeight = canvas.height - margin * 2;
+                
+                // Main house
+                ctx.beginPath();
+                ctx.rect(margin, margin, houseWidth, houseHeight);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Garage
+                const garageWidth = houseWidth * 0.3;
+                ctx.beginPath();
+                ctx.rect(margin, margin + houseHeight * 0.6, garageWidth, houseHeight * 0.4);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Interior walls
+                ctx.beginPath();
+                // Living room
+                ctx.rect(margin + houseWidth * 0.3, margin + houseHeight * 0.2, houseWidth * 0.4, houseHeight * 0.4);
+                // Kitchen
+                ctx.rect(margin + houseWidth * 0.4, margin + houseHeight * 0.6, houseWidth * 0.3, houseHeight * 0.3);
+                ctx.stroke();
+                
+                // Add room labels
+                ctx.fillStyle = '#3b82f6';
+                ctx.font = 'bold 14px sans-serif';
+                ctx.fillText('Living Room', margin + houseWidth * 0.4, margin + houseHeight * 0.3);
+                ctx.fillText('Kitchen', margin + houseWidth * 0.45, margin + houseHeight * 0.7);
+                ctx.fillText('Garage', margin + houseWidth * 0.05, margin + houseHeight * 0.8);
+            }
+            
+            // Initial draw
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Initialize feather icons
+            feather.replace();
+        });
+    </script>
+</body>
+</html>
