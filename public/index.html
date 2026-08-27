@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamDwell - South African Dream House Plans in 3D</title>
+    <link rel="icon" type="image/png" href="/images/icon48.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        .room-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+        }
+        .gradient-grid {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(217, 119, 6, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(217, 119, 6, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full z-50 border-b border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="index.html" class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-amber-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-amber-600/30">
+                        <i data-feather="home" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold text-slate-900 tracking-tight">DreamDwell</span>
+                        <span class="text-[10px] text-amber-700 font-bold uppercase tracking-wider block -mt-1">Archid Style SA</span>
+                    </div>
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-amber-700 font-bold">Home</a>
+                    <a href="#plans" class="text-slate-600 hover:text-amber-700 transition font-medium">Dream House Plans</a>
+                    <a href="#elements" class="text-slate-600 hover:text-amber-700 transition font-medium">SA Architecture</a>
+                    <a href="#features" class="text-slate-600 hover:text-amber-700 transition font-medium">Features</a>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <a href="designer.html" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-amber-600/25 flex items-center gap-1.5">
+                        <i data-feather="edit-3" class="w-4 h-4"></i>
+                        <span>Launch 3D Studio</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Realistic 3D Villa Visualizer -->
+    <section class="pt-28 pb-16 px-4 sm:px-6 lg:px-8 gradient-grid relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <!-- Left: Headings & Call to Actions -->
+                <div class="lg:w-1/2">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider mb-6">
+                        <i data-feather="sun" class="w-3.5 h-3.5 text-amber-600"></i>
+                        <span>Floating Cantilever Dream Architecture</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+                        Modern Floating Houses in <span class="text-amber-600">Realistic 3D</span>
+                    </h1>
+                    <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                        Design breathtaking contemporary South African dream homes featuring floating cantilevered upper stories, dark portal framing, vertical timber louvers, planter balconies, covered braai patios, and sparkling pools.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="designer.html?template=floating-cantilever-villa" class="bg-amber-600 hover:bg-amber-700 text-white px-7 py-3.5 rounded-xl text-base font-bold transition shadow-lg shadow-amber-600/30 flex items-center justify-center gap-2">
+                            <span>Open Floating Villa in 3D</span>
+                            <i data-feather="arrow-right" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#floating-gallery" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-7 py-3.5 rounded-xl text-base font-semibold transition shadow-sm flex items-center justify-center gap-2">
+                            <i data-feather="image" class="w-5 h-5 text-amber-600"></i>
+                            <span>View House Image Gallery</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Stats Grid -->
+                    <div class="mt-10 grid grid-cols-3 gap-6 pt-6 border-t border-slate-200/80">
+                        <div>
+                            <div class="text-2xl font-bold text-slate-900">m² & sq ft</div>
+                            <div class="text-xs text-slate-500 font-medium">Dual Metric Calibration</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-amber-700">Cantilever Box</div>
+                            <div class="text-xs text-slate-500 font-medium">Floating Balconies</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-slate-900">Braai & Pool</div>
+                            <div class="text-xs text-slate-500 font-medium">Outdoor Entertainment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive 3D Architectural Scene -->
+                <div class="lg:w-1/2 w-full">
+                    <div class="relative bg-white p-4 sm:p-5 rounded-2xl shadow-xl border border-slate-200">
+                        <div class="flex items-center justify-between mb-3 px-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                                <span class="text-xs text-slate-500 font-mono ml-2">floating-cantilever-villa.3d</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="setHeroLight('day')" id="hero-btn-day" class="px-2 py-1 rounded text-xs font-semibold bg-amber-500 text-slate-950 flex items-center gap-1">
+                                    <i data-feather="sun" class="w-3 h-3"></i>
+                                    <span>Day</span>
+                                </button>
+                                <button onclick="setHeroLight('sunset')" id="hero-btn-sunset" class="px-2 py-1 rounded text-xs font-semibold text-slate-600 hover:bg-slate-100 flex items-center gap-1">
+                                    <i data-feather="sunset" class="w-3 h-3"></i>
+                                    <span>Sunset</span>
+                                </button>
+                                <button onclick="setHeroLight('night')" id="hero-btn-night" class="px-2 py-1 rounded text-xs font-semibold text-slate-600 hover:bg-slate-100 flex items-center gap-1">
+                                    <i data-feather="moon" class="w-3 h-3"></i>
+                                    <span>Night</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="relative h-80 sm:h-[400px] w-full rounded-xl overflow-hidden bg-slate-950">
+                            <canvas id="hero-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+                            
+                            <!-- Badges -->
+                            <div class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-white text-xs flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                                <span>Floating Frame • Timber Louvers • Planter Balcony</span>
+                            </div>
+
+                            <div class="absolute bottom-4 right-4 bg-amber-600/90 backdrop-blur-md px-3 py-1.5 rounded-lg text-white text-xs font-semibold flex items-center gap-1.5 shadow-md">
+                                <i data-feather="rotate-cw" class="w-3.5 h-3.5"></i>
+                                <span>Drag to Orbit in 3D</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Beautiful Houses Image Showcase Gallery (NEW) -->
+    <section id="floating-gallery" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">Visual Elevation Gallery</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-3">Floating Cantilever Dream Homes</h2>
+                    <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl">
+                        Explore stunning photorealistic elevation renders of modern floating houses with cantilevered boxes, vertical timber slats, glowing architectural sconces, laser-cut screens, and lush planter balconies.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700 text-xs">
+                    <button onclick="filterGallery('all')" class="gallery-filter-btn px-3 py-1.5 rounded-lg font-bold bg-amber-600 text-white transition">All Designs</button>
+                    <button onclick="filterGallery('cantilever')" class="gallery-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white transition">Floating Box</button>
+                    <button onclick="filterGallery('twilight')" class="gallery-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white transition">Dusk Glow</button>
+                </div>
+            </div>
+
+            <!-- Image Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1: The Cantilever Portal Villa (Matching User Reference Image) -->
+                <div class="group bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-amber-500/80 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col justify-between">
+                    <div class="relative overflow-hidden cursor-pointer" onclick="openImageModal('/images/floating_villa_facade.jpg', 'The Cantilever Portal Villa', '385 m² • 4-Bed Floating Box House', 'Dramatic floating cantilevered upper level with dark charcoal portal frame, warm vertical teak timber slats, warm facade sconce lighting, planter balcony, laser-cut screen lattice, and modern driveway gate.')">
+                        <img src="/images/floating_villa_facade.jpg" alt="Floating Modern Villa Elevation" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        <div class="absolute top-3 left-3 bg-amber-500 text-slate-950 text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-md shadow-md">
+                            Featured Cantilever
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">Modern Box Frame</span>
+                            <h3 class="text-lg font-bold text-white leading-snug">The Cantilever Portal Villa</h3>
+                            <p class="text-xs text-slate-300 mt-1">385 m² (4,144 sq ft) • 4 Beds</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-850 border-t border-slate-700/60 flex items-center justify-between gap-2">
+                        <button onclick="openImageModal('/images/floating_villa_facade.jpg', 'The Cantilever Portal Villa', '385 m² • 4-Bed Floating Box House', 'Dramatic floating cantilevered upper level with dark charcoal portal frame, warm vertical teak timber slats, warm facade sconce lighting, planter balcony, laser-cut screen lattice, and modern driveway gate.')" class="text-xs font-semibold text-slate-300 hover:text-amber-400 transition flex items-center gap-1">
+                            <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
+                            <span>View Full High-Res</span>
+                        </button>
+                        <a href="designer.html?template=floating-cantilever-villa" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
+                            <span>Open 3D Plan</span>
+                            <i data-feather="arrow-right" class="w-3 h-3"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2: The Floating Sunset Estate (Panoramic Twilight View) -->
+                <div class="group bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-amber-500/80 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col justify-between">
+                    <div class="relative overflow-hidden cursor-pointer" onclick="openImageModal('/images/floating_luxury_estate.jpg', 'The Constantia Floating Crest', '580 m² • 5-Bed Luxury Estate', 'Architectural photo of luxury dream house with cantilevered upper floors, floor-to-ceiling glass walls, warm timber soffits, rim-flow pool, braai patio, and sunset lighting.')">
+                        <img src="/images/floating_luxury_estate.jpg" alt="Floating Luxury Estate" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        <div class="absolute top-3 left-3 bg-purple-600 text-white text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-md shadow-md">
+                            Twilight Glow
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">Infinity Pool & Braai</span>
+                            <h3 class="text-lg font-bold text-white leading-snug">The Constantia Floating Crest</h3>
+                            <p class="text-xs text-slate-300 mt-1">580 m² (6,243 sq ft) • 5 Beds</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-850 border-t border-slate-700/60 flex items-center justify-between gap-2">
+                        <button onclick="openImageModal('/images/floating_luxury_estate.jpg', 'The Constantia Floating Crest', '580 m² • 5-Bed Luxury Estate', 'Architectural photo of luxury dream house with cantilevered upper floors, floor-to-ceiling glass walls, warm timber soffits, rim-flow pool, braai patio, and sunset lighting.')" class="text-xs font-semibold text-slate-300 hover:text-amber-400 transition flex items-center gap-1">
+                            <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
+                            <span>View Full High-Res</span>
+                        </button>
+                        <a href="designer.html?template=constantia-crest" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
+                            <span>Open 3D Plan</span>
+                            <i data-feather="arrow-right" class="w-3 h-3"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3: The Serengeti Cantilever Sunset -->
+                <div class="group bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-amber-500/80 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col justify-between">
+                    <div class="relative overflow-hidden cursor-pointer" onclick="openImageModal('/images/floating_cantilever_sunset.jpg', 'The Serengeti Double-Storey', '420 m² • 4-Bed Architectural Masterpiece', 'Modern 3-storey floating cantilevered house with dark framing border, rich teak vertical slats, warm golden interior glow, cantilevered planter balconies, and decorative lattice.')">
+                        <img src="/images/floating_cantilever_sunset.jpg" alt="Floating Cantilever Sunset" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        <div class="absolute top-3 left-3 bg-amber-600 text-white text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-md shadow-md">
+                            Sunset Ambience
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">Double Storey Luxury</span>
+                            <h3 class="text-lg font-bold text-white leading-snug">The Serengeti Sunset</h3>
+                            <p class="text-xs text-slate-300 mt-1">420 m² (4,520 sq ft) • 4 Beds</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-850 border-t border-slate-700/60 flex items-center justify-between gap-2">
+                        <button onclick="openImageModal('/images/floating_cantilever_sunset.jpg', 'The Serengeti Double-Storey', '420 m² • 4-Bed Architectural Masterpiece', 'Modern 3-storey floating cantilevered house with dark framing border, rich teak vertical slats, warm golden interior glow, cantilevered planter balconies, and decorative lattice.')" class="text-xs font-semibold text-slate-300 hover:text-amber-400 transition flex items-center gap-1">
+                            <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
+                            <span>View Full High-Res</span>
+                        </button>
+                        <a href="designer.html?template=serengeti-double-storey" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
+                            <span>Open 3D Plan</span>
+                            <i data-feather="arrow-right" class="w-3 h-3"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 4: The Lowveld Modern Haven (Daytime Elevation) -->
+                <div class="group bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-amber-500/80 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col justify-between">
+                    <div class="relative overflow-hidden cursor-pointer" onclick="openImageModal('/images/floating_modern_haven.jpg', 'The Lowveld Modern Haven', '285 m² • Contemporary Floating Villa', 'Ultra-modern front elevation of floating cantilever house with projecting rectangular volumes, dark bold outline, vertical timber louvers, hanging lush green planter boxes, and blue sky.')">
+                        <img src="/images/floating_modern_haven.jpg" alt="Floating Modern Haven" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        <div class="absolute top-3 left-3 bg-sky-500 text-slate-950 text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-md shadow-md">
+                            Daylight Clarity
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">Vertical Wood Louvers</span>
+                            <h3 class="text-lg font-bold text-white leading-snug">The Lowveld Modern Haven</h3>
+                            <p class="text-xs text-slate-300 mt-1">285 m² (3,067 sq ft) • 3 Beds</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-850 border-t border-slate-700/60 flex items-center justify-between gap-2">
+                        <button onclick="openImageModal('/images/floating_modern_haven.jpg', 'The Lowveld Modern Haven', '285 m² • Contemporary Floating Villa', 'Ultra-modern front elevation of floating cantilever house with projecting rectangular volumes, dark bold outline, vertical timber louvers, hanging lush green planter boxes, and blue sky.')" class="text-xs font-semibold text-slate-300 hover:text-amber-400 transition flex items-center gap-1">
+                            <i data-feather="maximize-2" class="w-3.5 h-3.5"></i>
+                            <span>View Full High-Res</span>
+                        </button>
+                        <a href="designer.html?template=lowveld-sanctuary" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
+                            <span>Open 3D Plan</span>
+                            <i data-feather="arrow-right" class="w-3 h-3"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- South African Signature Architectural Elements (Archid Style) -->
+    <section id="elements" class="py-20 px-4 sm:px-6 lg:px-8 bg-white border-y border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Iconic Elements</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3 mb-4">South African Architectural Signatures</h2>
+                <p class="text-slate-600 text-base">Inspired by contemporary luxury dream homes across Gauteng, Western Cape, and KwaZulu-Natal.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Element 1: Covered Braai & Pergola -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 room-hover transition">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center mb-5">
+                        <i data-feather="flag" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Covered Braai Entertainment Patio</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Seamless indoor-outdoor flow featuring built-in South African wood/charcoal braai units, prep counters, timber slatted pergolas, and stacking glass doors.
+                    </p>
+                    <div class="text-xs font-semibold text-amber-800 bg-amber-100/60 px-2.5 py-1 rounded-md inline-block">Built-in Braai + Pergola</div>
+                </div>
+
+                <!-- Element 2: Swimming Pool & Deck -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 room-hover transition">
+                    <div class="w-12 h-12 bg-sky-100 text-sky-700 rounded-xl flex items-center justify-center mb-5">
+                        <i data-feather="droplet" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Rim-Flow Swimming Pool & Sun Deck</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Integrated sparkling swimming pools with natural stone perimeter coping, Balau hardwood sun decks, sunken boma firepits, and underwater glow lighting.
+                    </p>
+                    <div class="text-xs font-semibold text-sky-800 bg-sky-100/60 px-2.5 py-1 rounded-md inline-block">Pool + Timber Sun Deck</div>
+                </div>
+
+                <!-- Element 3: Double-Volume Foyer & Stone Cladding -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 room-hover transition">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center mb-5">
+                        <i data-feather="layers" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Stone Cladding & Double-Volume Foyers</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Grand architectural entrance halls with dramatic high ceilings, Rustenburg quartz stone cladding, floor-to-ceiling glass, and floating cantilever staircases.
+                    </p>
+                    <div class="text-xs font-semibold text-purple-800 bg-purple-100/60 px-2.5 py-1 rounded-md inline-block">Rustenburg Stone + High Ceilings</div>
+                </div>
+
+                <!-- Element 4: Pyjama Lounge -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 room-hover transition">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center mb-5">
+                        <i data-feather="tv" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Upstairs Pyjama Lounge</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Dedicated upper-level private family retreat connecting all bedrooms, with coffee station and glass sliding doors opening to private balconies.
+                    </p>
+                    <div class="text-xs font-semibold text-indigo-800 bg-indigo-100/60 px-2.5 py-1 rounded-md inline-block">Upper Level Family Retreat</div>
+                </div>
+
+                <!-- Element 5: Scullery & Staff Quarters -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 room-hover transition">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center mb-5">
+                        <i data-feather="archive" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Separate Scullery & Staff Quarters</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Functional walk-in scullery keeping the show kitchen pristine, accompanied by self-contained domestic staff quarters (SQ) with private bathroom.
+                    </p>
+                    <div class="text-xs font-semibold text-emerald-800 bg-emerald-100/60 px-2.5 py-1 rounded-md inline-block">Scullery + SQ Ensuite</div>
+                </div>
+
+                <!-- Element 6: Sunken Boma & Firepit -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 room-hover transition">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-700 rounded-xl flex items-center justify-center mb-5">
+                        <i data-feather="disc" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Sunken Boma & Firepit</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        African boma experience with circular natural stone bench seating, central wood firepit, and warm evening ambient glow for stargazing.
+                    </p>
+                    <div class="text-xs font-semibold text-orange-800 bg-orange-100/60 px-2.5 py-1 rounded-md inline-block">African Boma Stargazing</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- South African Dream House Plan Gallery -->
+    <section id="plans" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-100/70">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Catalog</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3 mb-3">South African Dream House Plans</h2>
+                <p class="text-slate-600 text-base">Select an authentic South African architectural blueprint to inspect and customize in 3D.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Plan 0: The Floating Cantilever Villa (385 m²) - PREMIER ARCHITECTURAL HIGHLIGHT -->
+                <div class="bg-white border-2 border-amber-500/40 rounded-3xl overflow-hidden room-hover transition shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-64 overflow-hidden group cursor-pointer" onclick="openImageModal('/images/floating_villa_facade.jpg', 'The Floating Cantilever Villa', '385 m² • 4-Bed Floating Box House', 'Iconic South African modern floating cantilever design with bold dark portal frame, vertical teak timber slats, cantilevered upper floor with integrated planter balconies, double-volume open lounge, covered braai patio, and sparkling pool.')">
+                            <img src="/images/floating_villa_facade.jpg" alt="Floating Cantilever Villa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-amber-500 text-slate-950 text-xs font-extrabold uppercase px-3 py-1 rounded-lg shadow-md flex items-center gap-1">
+                                <i data-feather="star" class="w-3.5 h-3.5 fill-current"></i>
+                                <span>Premier Floating Box Villa</span>
+                            </span>
+                            <div class="absolute bottom-4 left-4 right-4 text-white">
+                                <span class="text-xs font-bold text-amber-300 uppercase tracking-wider">Archid Style Signature</span>
+                                <div class="text-xl font-bold">The Floating Cantilever Villa</div>
+                            </div>
+                        </div>
+
+                        <div class="p-7">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <span class="text-xs font-bold text-amber-700 uppercase tracking-wider bg-amber-100/60 px-2.5 py-1 rounded-md">Floating Cantilever Modern</span>
+                                    <h3 class="text-2xl font-extrabold text-slate-900 mt-2">The Floating Cantilever Villa</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-black text-slate-900 font-mono">385 m²</div>
+                                    <div class="text-xs text-slate-400 font-mono">4,144 sq ft</div>
+                                </div>
+                            </div>
+
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                Iconic modern floating cantilever design featuring a bold dark portal frame, vertical teak timber slats, cantilevered upper floor with integrated planter balconies, double-volume open lounge, covered braai patio, and sparkling pool.
+                            </p>
+
+                            <!-- Specifications Checklist -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="moon" class="w-4 h-4 text-purple-600"></i>
+                                    <span class="font-semibold text-slate-700">4 Ensuite Beds</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="droplet" class="w-4 h-4 text-sky-600"></i>
+                                    <span class="font-semibold text-slate-700">4.5 Bathrooms</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="truck" class="w-4 h-4 text-slate-600"></i>
+                                    <span class="font-semibold text-slate-700">Double Garage</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="flag" class="w-4 h-4 text-amber-600"></i>
+                                    <span class="font-semibold text-slate-700">Braai Entertainment</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="droplet" class="w-4 h-4 text-sky-600"></i>
+                                    <span class="font-semibold text-slate-700">Sparkling Pool</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="user-check" class="w-4 h-4 text-emerald-600"></i>
+                                    <span class="font-semibold text-slate-700">Staff Quarters (SQ)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-7 pb-7">
+                        <a href="designer.html?template=floating-cantilever-villa" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3.5 rounded-xl text-sm text-center transition shadow-md shadow-amber-600/25 flex items-center justify-center gap-2">
+                            <span>Open "Floating Cantilever Villa" in 3D Studio</span>
+                            <i data-feather="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Plan 1: The Serengeti (420 m²) -->
+                <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden room-hover transition shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-64 overflow-hidden group cursor-pointer" onclick="openImageModal('/images/floating_cantilever_sunset.jpg', 'The Serengeti Double-Storey', '420 m² • 4-Bed Luxury Double-Storey', 'Iconic South African luxury design with double-volume entrance, covered patio with built-in braai, swimming pool, pyjama lounge, scullery, and staff quarters.')">
+                            <img src="/images/floating_cantilever_sunset.jpg" alt="The Serengeti Sunset" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md text-amber-300 text-xs font-bold uppercase px-3 py-1 rounded-lg border border-slate-700">
+                                Double Storey
+                            </span>
+                            <div class="absolute bottom-4 left-4 right-4 text-white">
+                                <span class="text-xs font-bold text-amber-300 uppercase tracking-wider">Archid Style Classic</span>
+                                <div class="text-xl font-bold">The Serengeti</div>
+                            </div>
+                        </div>
+
+                        <div class="p-7">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <span class="text-xs font-bold text-amber-700 uppercase tracking-wider bg-amber-100/60 px-2.5 py-1 rounded-md">Double Storey Luxury</span>
+                                    <h3 class="text-2xl font-extrabold text-slate-900 mt-2">The Serengeti</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-black text-slate-900 font-mono">420 m²</div>
+                                    <div class="text-xs text-slate-400 font-mono">4,520 sq ft</div>
+                                </div>
+                            </div>
+
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                Iconic contemporary South African double-storey with double-volume entrance, open-plan lounge & dining, covered braai patio, swimming pool, pyjama lounge, executive study, scullery, and staff quarters.
+                            </p>
+
+                            <!-- Specifications Checklist -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="moon" class="w-4 h-4 text-purple-600"></i>
+                                    <span class="font-semibold text-slate-700">4 Bedrooms (All Ensuite)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="droplet" class="w-4 h-4 text-sky-600"></i>
+                                    <span class="font-semibold text-slate-700">4.5 Bathrooms</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="truck" class="w-4 h-4 text-slate-600"></i>
+                                    <span class="font-semibold text-slate-700">Double Garage</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="flag" class="w-4 h-4 text-amber-600"></i>
+                                    <span class="font-semibold text-slate-700">Built-in Braai Patio</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="tv" class="w-4 h-4 text-indigo-600"></i>
+                                    <span class="font-semibold text-slate-700">Pyjama Lounge</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="user-check" class="w-4 h-4 text-emerald-600"></i>
+                                    <span class="font-semibold text-slate-700">Staff Quarters (SQ)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-7 pb-7">
+                        <a href="designer.html?template=serengeti-double-storey" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm text-center transition shadow-md flex items-center justify-center gap-2">
+                            <span>Open "The Serengeti" in 3D Studio</span>
+                            <i data-feather="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Plan 2: The Lowveld Sanctuary (285 m²) -->
+                <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden room-hover transition shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-64 overflow-hidden group cursor-pointer" onclick="openImageModal('/images/floating_modern_haven.jpg', 'The Lowveld Sanctuary', '285 m² • Single-Storey Contemporary Villa', 'Single-level modern masterpiece with floor-to-ceiling stacking doors opening from the grand living salon to an expansive covered braai entertainment patio, sparkling pool, and sunken boma firepit.')">
+                            <img src="/images/floating_modern_haven.jpg" alt="The Lowveld Sanctuary" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md text-sky-300 text-xs font-bold uppercase px-3 py-1 rounded-lg border border-slate-700">
+                                Single Storey
+                            </span>
+                            <div class="absolute bottom-4 left-4 right-4 text-white">
+                                <span class="text-xs font-bold text-sky-300 uppercase tracking-wider">Indoor-Outdoor Flow</span>
+                                <div class="text-xl font-bold">The Lowveld Sanctuary</div>
+                            </div>
+                        </div>
+
+                        <div class="p-7">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <span class="text-xs font-bold text-sky-700 uppercase tracking-wider bg-sky-100/60 px-2.5 py-1 rounded-md">Single Storey Contemporary</span>
+                                    <h3 class="text-2xl font-extrabold text-slate-900 mt-2">The Lowveld Sanctuary</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-black text-slate-900 font-mono">285 m²</div>
+                                    <div class="text-xs text-slate-400 font-mono">3,067 sq ft</div>
+                                </div>
+                            </div>
+
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                Single-level modern masterpiece with floor-to-ceiling stacking doors opening from the grand living salon to an expansive covered braai entertainment patio, sparkling pool, and sunken boma firepit.
+                            </p>
+
+                            <!-- Specifications Checklist -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="moon" class="w-4 h-4 text-purple-600"></i>
+                                    <span class="font-semibold text-slate-700">3 Bedrooms (Master WIC)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="droplet" class="w-4 h-4 text-sky-600"></i>
+                                    <span class="font-semibold text-slate-700">2.5 Bathrooms</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="truck" class="w-4 h-4 text-slate-600"></i>
+                                    <span class="font-semibold text-slate-700">Double Garage</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="flag" class="w-4 h-4 text-amber-600"></i>
+                                    <span class="font-semibold text-slate-700">Braai Entertainment</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="disc" class="w-4 h-4 text-orange-600"></i>
+                                    <span class="font-semibold text-slate-700">Sunken Boma & Firepit</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="archive" class="w-4 h-4 text-emerald-600"></i>
+                                    <span class="font-semibold text-slate-700">Scullery & Pantry</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-7 pb-7">
+                        <a href="designer.html?template=lowveld-sanctuary" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm text-center transition shadow-md flex items-center justify-center gap-2">
+                            <span>Open "The Lowveld Sanctuary"</span>
+                            <i data-feather="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Plan 3: The Constantia Crest (580 m²) -->
+                <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden room-hover transition shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-64 overflow-hidden group cursor-pointer" onclick="openImageModal('/images/floating_luxury_estate.jpg', 'The Constantia Crest', '580 m² • Signature Luxury Estate', 'Grand architectural statement featuring 5 ensuite suites, double-volume salon, upper cinema lounge, dual braai entertainment pavilions, infinity rim-flow pool, sunken boma, and 3-car garage.')">
+                            <img src="/images/floating_luxury_estate.jpg" alt="The Constantia Crest" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md text-purple-300 text-xs font-bold uppercase px-3 py-1 rounded-lg border border-slate-700">
+                                Signature Estate
+                            </span>
+                            <div class="absolute bottom-4 left-4 right-4 text-white">
+                                <span class="text-xs font-bold text-purple-300 uppercase tracking-wider">Infinity Pool & Pavilions</span>
+                                <div class="text-xl font-bold">The Constantia Crest</div>
+                            </div>
+                        </div>
+
+                        <div class="p-7">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <span class="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100/60 px-2.5 py-1 rounded-md">Signature Luxury Estate</span>
+                                    <h3 class="text-2xl font-extrabold text-slate-900 mt-2">The Constantia Crest</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-black text-slate-900 font-mono">580 m²</div>
+                                    <div class="text-xs text-slate-400 font-mono">6,243 sq ft</div>
+                                </div>
+                            </div>
+
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                Grand architectural statement featuring 5 ensuite suites, double-volume salon, upper cinema lounge, dual braai entertainment pavilions, infinity rim-flow pool, sunken boma, and 3-car garage.
+                            </p>
+
+                            <!-- Specifications Checklist -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="moon" class="w-4 h-4 text-purple-600"></i>
+                                    <span class="font-semibold text-slate-700">5 Ensuite Suites</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="droplet" class="w-4 h-4 text-sky-600"></i>
+                                    <span class="font-semibold text-slate-700">5.5 Bathrooms</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="truck" class="w-4 h-4 text-slate-600"></i>
+                                    <span class="font-semibold text-slate-700">Triple Garage</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="tv" class="w-4 h-4 text-indigo-600"></i>
+                                    <span class="font-semibold text-slate-700">Cinema & Pyjama Lounge</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="flag" class="w-4 h-4 text-amber-600"></i>
+                                    <span class="font-semibold text-slate-700">Dual Braai Pavilions</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-feather="user-check" class="w-4 h-4 text-emerald-600"></i>
+                                    <span class="font-semibold text-slate-700">Staff Cottage (SQ)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-7 pb-7">
+                        <a href="designer.html?template=constantia-crest" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-sm text-center transition shadow-md flex items-center justify-center gap-2">
+                            <span>Open "The Constantia Crest"</span>
+                            <i data-feather="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- High-Resolution Image Modal (Lightbox) -->
+    <div id="image-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4 sm:p-6 transition-all duration-300">
+        <div class="relative bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center px-6 py-4 border-b border-slate-800 bg-slate-900/90">
+                <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
+                    <div>
+                        <h3 id="modal-title" class="text-lg font-extrabold text-white">The Cantilever Portal Villa</h3>
+                        <p id="modal-subtitle" class="text-xs text-amber-400 font-medium">385 m² • 4-Bed Floating Box House</p>
+                    </div>
+                </div>
+                <button onclick="closeImageModal()" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition">
+                    <i data-feather="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body Image Preview -->
+            <div class="relative flex-1 overflow-auto bg-black flex items-center justify-center min-h-[350px]">
+                <img id="modal-img" src="" alt="High-Res Architecture Elevation" class="max-h-[60vh] w-auto max-w-full object-contain mx-auto" referrerPolicy="no-referrer">
+            </div>
+
+            <!-- Modal Footer Description & Action -->
+            <div class="p-6 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <p id="modal-desc" class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                    Dramatic floating cantilevered upper level with dark charcoal portal frame, vertical teak timber slats, warm facade sconce lighting, planter balcony, laser-cut screen lattice, and modern driveway gate.
+                </p>
+                <a id="modal-plan-link" href="designer.html?template=floating-cantilever-villa" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-6 py-3 rounded-xl text-sm transition shadow-lg shadow-amber-600/30 flex items-center gap-2 whitespace-nowrap">
+                    <span>Inspect 3D Blueprint</span>
+                    <i data-feather="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center text-white">
+                        <i data-feather="home" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <span class="text-white font-bold tracking-tight">DreamDwell</span>
+                        <p class="text-xs text-slate-500">South African Dream House Plan Generator</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6 text-sm">
+                    <a href="designer.html" class="hover:text-white transition">3D Design Studio</a>
+                    <a href="#plans" class="hover:text-white transition">420m² Plans</a>
+                    <a href="#elements" class="hover:text-white transition">Braai & Pool Architecture</a>
+                </div>
+                <p class="text-xs text-slate-500">Built for contemporary South African dream home design.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Three.js Hero 3D Scene Initialization & Gallery Scripts -->
+    <script>
+        let heroScene, heroCamera, heroRenderer, heroHouseGroup;
+        let heroSun, heroAmbient, heroPoolLight, heroSconceLight;
+
+        function openImageModal(imgSrc, title, subtitle, desc, planTemplate = 'floating-cantilever-villa') {
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img');
+            const titleEl = document.getElementById('modal-title');
+            const subtitleEl = document.getElementById('modal-subtitle');
+            const descEl = document.getElementById('modal-desc');
+            const linkEl = document.getElementById('modal-plan-link');
+
+            if (modal && img && titleEl && subtitleEl && descEl) {
+                img.src = imgSrc;
+                titleEl.textContent = title;
+                subtitleEl.textContent = subtitle;
+                descEl.textContent = desc;
+                
+                let targetTemplate = 'floating-cantilever-villa';
+                if (title.includes('Serengeti')) targetTemplate = 'serengeti-double-storey';
+                else if (title.includes('Lowveld')) targetTemplate = 'lowveld-sanctuary';
+                else if (title.includes('Constantia')) targetTemplate = 'constantia-crest';
+                else if (title.includes('Karoo')) targetTemplate = 'karoo-vista';
+                
+                if (linkEl) {
+                    linkEl.href = `designer.html?template=${targetTemplate}`;
+                }
+
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                if (typeof feather !== 'undefined') feather.replace();
+            }
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Close on ESC key or clicking outside
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeImageModal();
+        });
+
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('image-modal');
+            if (modal && !modal.classList.contains('hidden') && e.target === modal) {
+                closeImageModal();
+            }
+        });
+
+        function filterGallery(category) {
+            const buttons = document.querySelectorAll('.gallery-filter-btn');
+            buttons.forEach(btn => {
+                btn.className = 'gallery-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white transition';
+            });
+            event.target.className = 'gallery-filter-btn px-3 py-1.5 rounded-lg font-bold bg-amber-600 text-white transition';
+
+            // Filter cards smoothly
+            const cards = document.querySelectorAll('#floating-gallery .group');
+            cards.forEach(card => {
+                if (category === 'all') {
+                    card.style.display = 'flex';
+                } else if (category === 'cantilever') {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = (text.includes('cantilever') || text.includes('box') || text.includes('modern haven')) ? 'flex' : 'none';
+                } else if (category === 'twilight') {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = (text.includes('twilight') || text.includes('sunset') || text.includes('glow')) ? 'flex' : 'none';
+                }
+            });
+        }
+
+        function setHeroLight(mode) {
+            ['day', 'sunset', 'night'].forEach(k => {
+                const btn = document.getElementById(`hero-btn-${k}`);
+                if (btn) {
+                    if (k === mode) {
+                        btn.className = 'px-2 py-1 rounded text-xs font-semibold bg-amber-500 text-slate-950 flex items-center gap-1';
+                    } else {
+                        btn.className = 'px-2 py-1 rounded text-xs font-semibold text-slate-600 hover:bg-slate-100 flex items-center gap-1';
+                    }
+                }
+            });
+
+            if (!heroScene) return;
+
+            if (mode === 'day') {
+                heroScene.background = new THREE.Color(0x93c5fd);
+                heroAmbient.color.setHex(0xffffff);
+                heroAmbient.intensity = 0.9;
+                heroSun.color.setHex(0xfffbeb);
+                heroSun.intensity = 1.3;
+                heroPoolLight.intensity = 0.5;
+                if (heroSconceLight) heroSconceLight.intensity = 0.2;
+            } else if (mode === 'sunset') {
+                heroScene.background = new THREE.Color(0x31102f);
+                heroAmbient.color.setHex(0xfb923c);
+                heroAmbient.intensity = 0.6;
+                heroSun.color.setHex(0xf97316);
+                heroSun.intensity = 1.8;
+                heroPoolLight.intensity = 1.8;
+                if (heroSconceLight) heroSconceLight.intensity = 2.5;
+            } else if (mode === 'night') {
+                heroScene.background = new THREE.Color(0x060913);
+                heroAmbient.color.setHex(0x1e293b);
+                heroAmbient.intensity = 0.4;
+                heroSun.intensity = 0.15;
+                heroPoolLight.intensity = 3.5;
+                if (heroSconceLight) heroSconceLight.intensity = 4.0;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof feather !== 'undefined') feather.replace();
+
+            const canvas = document.getElementById('hero-3d-canvas');
+            if (!canvas) return;
+
+            heroScene = new THREE.Scene();
+            heroScene.background = new THREE.Color(0x93c5fd);
+
+            heroCamera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            heroCamera.position.set(13, 11, 20);
+            heroCamera.lookAt(0, 2.0, 0);
+
+            heroRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            heroRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            heroRenderer.shadowMap.enabled = true;
+
+            // Lights
+            heroAmbient = new THREE.AmbientLight(0xffffff, 0.9);
+            heroScene.add(heroAmbient);
+
+            heroSun = new THREE.DirectionalLight(0xfffbeb, 1.3);
+            heroSun.position.set(15, 25, 15);
+            heroSun.castShadow = true;
+            heroScene.add(heroSun);
+
+            heroPoolLight = new THREE.PointLight(0x38bdf8, 0.8, 15);
+            heroPoolLight.position.set(-3.5, 0.5, 2.5);
+            heroScene.add(heroPoolLight);
+
+            heroSconceLight = new THREE.PointLight(0xf59e0b, 1.5, 8);
+            heroSconceLight.position.set(-0.2, 3.8, 3.2);
+            heroScene.add(heroSconceLight);
+
+            // Ground Grass
+            const ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(60, 60),
+                new THREE.MeshStandardMaterial({ color: 0x1e3a1e, roughness: 0.9 })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.05;
+            ground.receiveShadow = true;
+            heroScene.add(ground);
+
+            // Paved Motor Court & Entry Walkway
+            const driveway = new THREE.Mesh(
+                new THREE.PlaneGeometry(18, 14),
+                new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 })
+            );
+            driveway.rotation.x = -Math.PI / 2;
+            driveway.position.set(3, 0, 6);
+            heroScene.add(driveway);
+
+            heroHouseGroup = new THREE.Group();
+
+            // Materials
+            const stuccoMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.7 });
+            const darkFrameMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.35 });
+            const stoneMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.85 });
+            const timberMat = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.55 });
+            const foliageMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.8 });
+            const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.5, roughness: 0.1 });
+            const waterMat = new THREE.MeshPhysicalMaterial({ color: 0x0284c7, transparent: true, opacity: 0.85, roughness: 0.1 });
+
+            // Ground Floor Main Salon
+            const salon = new THREE.Mesh(new THREE.BoxGeometry(6.5, 2.8, 4), stuccoMat);
+            salon.position.set(0, 1.4, -1);
+            salon.castShadow = true;
+            heroHouseGroup.add(salon);
+
+            // Large Stacking Glass Doors
+            const glassDoors = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.4, 0.05), glassMat);
+            glassDoors.position.set(-0.2, 1.2, 1.02);
+            heroHouseGroup.add(glassDoors);
+
+            // Stone Feature Chimney / Feature Column
+            const stoneWall = new THREE.Mesh(new THREE.BoxGeometry(1.4, 7.2, 1.4), stoneMat);
+            stoneWall.position.set(-3.4, 3.6, -1);
+            stoneWall.castShadow = true;
+            heroHouseGroup.add(stoneWall);
+
+            // Covered Braai Patio (Timber Deck + Pergola)
+            const deck = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.15, 3.2), timberMat);
+            deck.position.set(-0.8, 0.08, 2.6);
+            heroHouseGroup.add(deck);
+
+            // Pergola Beams
+            for (let x = -2.8; x <= 1.2; x += 0.8) {
+                const beam = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 3.2), timberMat);
+                beam.position.set(x, 2.8, 2.6);
+                heroHouseGroup.add(beam);
+            }
+
+            // Braai Grill Unit
+            const braai = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.8), stoneMat);
+            braai.position.set(-2.6, 0.6, 1.8);
+            heroHouseGroup.add(braai);
+
+            // Swimming Pool & Sparkling Water
+            const poolBorder = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.2, 3.5), stoneMat);
+            poolBorder.position.set(-4.2, 0.1, 3.2);
+            heroHouseGroup.add(poolBorder);
+
+            const poolWater = new THREE.Mesh(new THREE.BoxGeometry(3.9, 0.18, 2.9), waterMat);
+            poolWater.position.set(-4.2, 0.16, 3.2);
+            heroHouseGroup.add(poolWater);
+
+            // --- FLOATING CANTILEVER UPPER LEVEL (Archid Modern Box House) ---
+            // 1. Floating Upper Box Volume (Extends out forward)
+            const upperBox = new THREE.Mesh(new THREE.BoxGeometry(6.2, 2.8, 4.8), stuccoMat);
+            upperBox.position.set(-0.4, 4.3, 0.4);
+            upperBox.castShadow = true;
+            heroHouseGroup.add(upperBox);
+
+            // 2. Iconic Dark Framing Portal Outer Bevel (Matching the User's Image)
+            const portalTop = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.25, 5.0), darkFrameMat);
+            portalTop.position.set(-0.4, 5.75, 0.4);
+            heroHouseGroup.add(portalTop);
+
+            const portalBottom = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.25, 5.0), darkFrameMat);
+            portalBottom.position.set(-0.4, 2.85, 0.4);
+            heroHouseGroup.add(portalBottom);
+
+            const portalLeft = new THREE.Mesh(new THREE.BoxGeometry(0.25, 2.9, 5.0), darkFrameMat);
+            portalLeft.position.set(-3.5, 4.3, 0.4);
+            heroHouseGroup.add(portalLeft);
+
+            const portalRight = new THREE.Mesh(new THREE.BoxGeometry(0.25, 2.9, 5.0), darkFrameMat);
+            portalRight.position.set(2.7, 4.3, 0.4);
+            heroHouseGroup.add(portalRight);
+
+            // 3. Vertical Teak Timber Louvers / Slats (Signature feature from image)
+            for (let x = -3.2; x <= -1.4; x += 0.22) {
+                const slat = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.5, 0.1), timberMat);
+                slat.position.set(x, 4.3, 2.9);
+                heroHouseGroup.add(slat);
+            }
+
+            // 4. Upper Cantilever Glass Balcony & Planter Box (Hanging Greenery)
+            const planterBox = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.5, 0.4), darkFrameMat);
+            planterBox.position.set(0.6, 3.2, 2.95);
+            heroHouseGroup.add(planterBox);
+
+            const greenery = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.35, 0.3), foliageMat);
+            greenery.position.set(0.6, 3.5, 2.95);
+            heroHouseGroup.add(greenery);
+
+            const upperGlass = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.2, 0.05), glassMat);
+            upperGlass.position.set(0.6, 4.3, 2.9);
+            heroHouseGroup.add(upperGlass);
+
+            // Automated Double Garage (Stone & Dark Sectional Door)
+            const garage = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.8, 4.5), stoneMat);
+            garage.position.set(4.8, 1.4, 0);
+            heroHouseGroup.add(garage);
+
+            const garageDoor = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.3, 0.1), darkFrameMat);
+            garageDoor.position.set(4.8, 1.2, 2.26);
+            heroHouseGroup.add(garageDoor);
+
+            heroScene.add(heroHouseGroup);
+
+            // Drag rotation
+            let isDragging = false;
+            let prevX = 0, prevY = 0;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                prevX = e.clientX;
+                prevY = e.clientY;
+            });
+
+            window.addEventListener('mouseup', () => isDragging = false);
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - prevX;
+                heroHouseGroup.rotation.y += dx * 0.008;
+                prevX = e.clientX;
+                prevY = e.clientY;
+            });
+
+            // Touch
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    prevX = e.touches[0].clientX;
+                    prevY = e.touches[0].clientY;
+                }
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                const dx = e.touches[0].clientX - prevX;
+                heroHouseGroup.rotation.y += dx * 0.008;
+                prevX = e.touches[0].clientX;
+                prevY = e.touches[0].clientY;
+            });
+
+            window.addEventListener('touchend', () => isDragging = false);
+
+            function animateHero() {
+                requestAnimationFrame(animateHero);
+                if (!isDragging) {
+                    heroHouseGroup.rotation.y += 0.0022;
+                }
+                heroRenderer.render(heroScene, heroCamera);
+            }
+            animateHero();
+
+            window.addEventListener('resize', () => {
+                if (!canvas) return;
+                heroCamera.aspect = canvas.clientWidth / canvas.clientHeight;
+                heroCamera.updateProjectionMatrix();
+                heroRenderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+            });
+        });
+    </script>
+</body>
+</html>

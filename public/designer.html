@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamDwell - South African Dream House Plan Studio</title>
+    <link rel="icon" type="image/png" href="/images/icon48.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        .designer-tool {
+            height: calc(100vh - 64px);
+        }
+        .blueprint-paper {
+            background-color: #0d1e38;
+            background-size: 24px 24px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .room-chip:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 h-screen overflow-hidden flex flex-col select-none">
+    <!-- Navigation Top Bar -->
+    <nav class="bg-white border-b border-slate-200 h-16 flex-shrink-0 z-30 px-3 sm:px-6">
+        <div class="flex justify-between h-full items-center">
+            <!-- Left: Logo & Plan Title -->
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <a href="index.html" class="flex items-center gap-2 hover:opacity-90 transition">
+                    <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center text-white shadow-sm shadow-amber-600/30">
+                        <i data-feather="home" class="w-4 h-4"></i>
+                    </div>
+                    <div class="hidden sm:block">
+                        <span class="text-base font-bold text-slate-900 tracking-tight">DreamDwell</span>
+                        <span class="text-[10px] text-amber-700 font-semibold uppercase tracking-wider block -mt-1">Archid Style SA</span>
+                    </div>
+                </a>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <div class="flex items-center gap-2">
+                    <input id="plan-title-input" type="text" value="The Serengeti - 4-Bed Modern Double-Storey" class="font-semibold text-slate-800 text-xs sm:text-sm px-2 py-1 rounded hover:bg-slate-100 focus:bg-white focus:ring-2 focus:ring-amber-500 border border-transparent focus:border-slate-300 outline-none w-44 sm:w-72 transition truncate" title="Click to rename plan">
+                    <span id="plan-category-badge" class="hidden lg:inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800 border border-amber-200">Double Storey Luxury</span>
+                </div>
+            </div>
+
+            <!-- Center/Right: Level Switcher & Unit Toggle & Controls -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Level Switcher (Ground / Upper / All) -->
+                <div id="level-switch-container" class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
+                    <button id="level-btn-all" onclick="setLevelFilter('all')" class="px-2.5 py-1 rounded-md font-semibold text-slate-600 hover:text-slate-900 transition">
+                        All
+                    </button>
+                    <button id="level-btn-1" onclick="setLevelFilter(1)" class="px-2.5 py-1 rounded-md font-semibold bg-white text-amber-700 shadow-sm transition">
+                        Ground
+                    </button>
+                    <button id="level-btn-2" onclick="setLevelFilter(2)" class="px-2.5 py-1 rounded-md font-semibold text-slate-600 hover:text-slate-900 transition">
+                        Upper Level
+                    </button>
+                </div>
+
+                <!-- Unit Mode Toggle (m² / sq ft) -->
+                <button id="unit-toggle-btn" onclick="toggleUnitMode()" class="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1" title="Switch between Metric (m²) and Imperial (sq ft)">
+                    <i data-feather="sliders" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span id="unit-label">Metric (m²)</span>
+                </button>
+
+                <div class="hidden md:block h-5 w-px bg-slate-200"></div>
+
+                <!-- Mode Toggle (2D / 3D) -->
+                <div class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                    <button id="view-mode-2d" onclick="switchViewMode('2d')" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-white text-blue-700 shadow-sm transition flex items-center gap-1.5">
+                        <i data-feather="grid" class="w-3.5 h-3.5"></i>
+                        <span>2D Plan</span>
+                    </button>
+                    <button id="view-mode-3d" onclick="switchViewMode('3d')" class="px-3 py-1.5 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                        <i data-feather="box" class="w-3.5 h-3.5"></i>
+                        <span>3D Realistic</span>
+                    </button>
+                </div>
+
+                <div class="hidden sm:block h-5 w-px bg-slate-200"></div>
+
+                <!-- AI Blueprint Generator Trigger -->
+                <button id="ai-modal-btn" onclick="openAiModal()" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+                    <i data-feather="zap" class="w-3.5 h-3.5"></i>
+                    <span class="hidden md:inline">AI Generate</span>
+                </button>
+
+                <!-- Save & Export -->
+                <button id="save-btn" onclick="saveCurrentPlan()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                    <i data-feather="save" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span class="hidden sm:inline">Save</span>
+                </button>
+
+                <button id="export-dropdown-btn" onclick="exportBlueprintImage()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+                    <i data-feather="download" class="w-3.5 h-3.5"></i>
+                    <span>Export</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Workspace Layout -->
+    <div class="flex-1 flex overflow-hidden designer-tool">
+        <!-- Left Sidebar: Architectural Room Library & Preset Selector -->
+        <aside class="w-72 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 z-20">
+            <!-- Sidebar Tabs -->
+            <div class="p-3 border-b border-slate-200 bg-slate-50/70">
+                <div class="flex justify-between items-center mb-1">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-700">Archid Room Library</div>
+                    <span class="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">South Africa</span>
+                </div>
+                <p class="text-[11px] text-slate-500">Click to place modular rooms on the current floor level.</p>
+            </div>
+
+            <!-- Room Quick Add Buttons -->
+            <div class="flex-1 overflow-y-auto p-3 space-y-4">
+                <!-- Category 1: Entertainment & Living -->
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-1 flex items-center justify-between">
+                        <span>Indoor & Outdoor Living</span>
+                        <i data-feather="sun" class="w-3 h-3 text-amber-500"></i>
+                    </div>
+                    <div class="space-y-1.5">
+                        <button onclick="addRoom('Living Room', '#e0f2fe', '#0369a1', 240, 180, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-blue-100 text-blue-600 flex items-center justify-center text-xs">
+                                    <i data-feather="coffee" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-blue-600">Grand Living Lounge</div>
+                                    <div class="text-[10px] text-slate-400">Open-plan salon</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Patio', '#fef08a', '#a16207', 260, 140, 'timber')" class="w-full text-left p-2 rounded-lg border border-amber-200 bg-amber-50/30 hover:border-amber-400 hover:bg-amber-50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-amber-200 text-amber-800 flex items-center justify-center text-xs">
+                                    <i data-feather="flag" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-amber-900">Covered Braai Patio</div>
+                                    <div class="text-[10px] text-amber-700">Built-in BBQ & Pergola</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-amber-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Pool', '#38bdf8', '#0369a1', 260, 160, 'water')" class="w-full text-left p-2 rounded-lg border border-sky-200 bg-sky-50/40 hover:border-sky-400 hover:bg-sky-50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-sky-200 text-sky-800 flex items-center justify-center text-xs">
+                                    <i data-feather="droplet" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-sky-900">Swimming Pool & Deck</div>
+                                    <div class="text-[10px] text-sky-700">Rim-flow pool + timber deck</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-sky-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Boma', '#fed7aa', '#9a3412', 150, 150, 'stone')" class="w-full text-left p-2 rounded-lg border border-orange-200 hover:border-orange-400 hover:bg-orange-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-orange-100 text-orange-700 flex items-center justify-center text-xs">
+                                    <i data-feather="disc" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-orange-700">Sunken Boma & Firepit</div>
+                                    <div class="text-[10px] text-slate-400">Circular stone seating</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-orange-700"></i>
+                        </button>
+
+                        <button onclick="addRoom('Dining Room', '#f1f5f9', '#475569', 160, 160, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-slate-400 hover:bg-slate-100 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-slate-200 text-slate-600 flex items-center justify-center text-xs">
+                                    <i data-feather="pie-chart" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800">Formal Dining Hall</div>
+                                    <div class="text-[10px] text-slate-400">Open-concept layout</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category 2: Kitchen & Utilities -->
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-1 flex items-center justify-between">
+                        <span>Kitchen & Service</span>
+                        <i data-feather="archive" class="w-3 h-3 text-amber-500"></i>
+                    </div>
+                    <div class="space-y-1.5">
+                        <button onclick="addRoom('Kitchen', '#fef3c7', '#b45309', 180, 180, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-amber-100 text-amber-600 flex items-center justify-center text-xs">
+                                    <i data-feather="archive" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-amber-600">Gourmet Kitchen & Island</div>
+                                    <div class="text-[10px] text-slate-400">Breakfast bar & hob</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Scullery', '#ffedd5', '#c2410c', 130, 160, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-orange-400 hover:bg-orange-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-orange-100 text-orange-600 flex items-center justify-center text-xs">
+                                    <i data-feather="layers" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-orange-600">Scullery & Laundry</div>
+                                    <div class="text-[10px] text-slate-400">Pantry & wash appliances</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-orange-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Staff', '#dcfce7', '#15803d', 140, 140, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
+                                    <i data-feather="user-check" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-emerald-600">Staff Quarters (SQ)</div>
+                                    <div class="text-[10px] text-slate-400">Domestic room + ensuite</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Garage', '#e2e8f0', '#334155', 200, 220, 'stone')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-slate-400 hover:bg-slate-100 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-slate-300 text-slate-700 flex items-center justify-center text-xs">
+                                    <i data-feather="truck" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800">Double Garage</div>
+                                    <div class="text-[10px] text-slate-400">Automated sectional doors</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category 3: Private Suites & Upstairs -->
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-1 flex items-center justify-between">
+                        <span>Suites & Upper Level</span>
+                        <i data-feather="moon" class="w-3 h-3 text-purple-500"></i>
+                    </div>
+                    <div class="space-y-1.5">
+                        <button onclick="addRoom('Master Bedroom', '#fae8ff', '#a21caf', 240, 180, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-fuchsia-400 hover:bg-fuchsia-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center text-xs">
+                                    <i data-feather="award" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-fuchsia-600">Master Suite & WIC</div>
+                                    <div class="text-[10px] text-slate-400">Dressing room + balcony</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-fuchsia-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Pyjama Lounge', '#ede9fe', '#6d28d9', 200, 160, 'stucco')" class="w-full text-left p-2 rounded-lg border border-purple-200 bg-purple-50/30 hover:border-purple-400 hover:bg-purple-50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-purple-200 text-purple-800 flex items-center justify-center text-xs">
+                                    <i data-feather="tv" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-purple-900">Upstairs Pyjama Lounge</div>
+                                    <div class="text-[10px] text-purple-700">Family relaxation retreat</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-purple-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Bedroom', '#ede9fe', '#6d28d9', 160, 150, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-purple-400 hover:bg-purple-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-purple-100 text-purple-600 flex items-center justify-center text-xs">
+                                    <i data-feather="moon" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-purple-600">Luxury Ensuite Bedroom</div>
+                                    <div class="text-[10px] text-slate-400">Wardrobe + private bath</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-purple-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Office', '#e0e7ff', '#4338ca', 150, 140, 'stucco')" class="w-full text-left p-2 rounded-lg border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs">
+                                    <i data-feather="monitor" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-indigo-600">Executive Study</div>
+                                    <div class="text-[10px] text-slate-400">Home office & library</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600"></i>
+                        </button>
+
+                        <button onclick="addRoom('Balcony', '#cffafe', '#0891b2', 200, 80, 'glass')" class="w-full text-left p-2 rounded-lg border border-cyan-200 hover:border-cyan-400 hover:bg-cyan-50/50 transition flex items-center justify-between group room-chip">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-cyan-100 text-cyan-700 flex items-center justify-center text-xs">
+                                    <i data-feather="wind" class="w-3.5 h-3.5"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-800 group-hover:text-cyan-700">Glass Balcony Terrace</div>
+                                    <div class="text-[10px] text-slate-400">Stainless steel balustrade</div>
+                                </div>
+                            </div>
+                            <i data-feather="plus" class="w-3.5 h-3.5 text-slate-400 group-hover:text-cyan-700"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Fast Switcher -->
+            <div class="p-3 border-t border-slate-200 bg-slate-50">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-1">Archid Style Presets</div>
+                <select id="preset-selector" onchange="loadPreset(this.value)" class="w-full text-xs font-semibold bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-slate-700 outline-none focus:ring-2 focus:ring-amber-500 shadow-sm">
+                    <option value="serengeti-double-storey">The Serengeti - 4-Bed Double Storey (420 m²)</option>
+                    <option value="lowveld-sanctuary">The Lowveld Sanctuary - 3-Bed Villa (285 m²)</option>
+                    <option value="constantia-crest">The Constantia Crest - 5-Bed Masterpiece (580 m²)</option>
+                    <option value="karoo-vista">The Karoo Vista - 2-Bed Eco Home (165 m²)</option>
+                </select>
+            </div>
+        </aside>
+
+        <!-- Center Workspace (Canvas Area) -->
+        <main class="flex-1 flex flex-col relative overflow-hidden bg-slate-900">
+            <!-- 2D Canvas Floating Toolbar -->
+            <div id="toolbar-2d" class="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-700 shadow-xl">
+                <button onclick="zoomCanvas(1.15)" title="Zoom In" class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-feather="zoom-in" class="w-4 h-4"></i>
+                </button>
+                <button onclick="zoomCanvas(0.85)" title="Zoom Out" class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-feather="zoom-out" class="w-4 h-4"></i>
+                </button>
+                <button onclick="resetCanvasView()" title="Fit to Screen" class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-feather="maximize-2" class="w-4 h-4"></i>
+                </button>
+                <div class="h-4 w-px bg-slate-700 mx-1"></div>
+                <button onclick="confirmClearCanvas()" title="Clear Rooms on Current Level" class="p-2 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-slate-800 transition">
+                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- 3D Realistic Viewport Toolbar -->
+            <div id="toolbar-3d" class="hidden absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 bg-slate-900/95 backdrop-blur-md p-2 rounded-xl border border-slate-700 shadow-2xl text-xs text-white">
+                <!-- Lighting Presets -->
+                <div class="flex items-center gap-1 bg-slate-800/80 p-1 rounded-lg border border-slate-700">
+                    <button onclick="set3DLighting('day')" id="light-btn-day" class="px-2 py-1 rounded font-semibold bg-amber-500 text-slate-950 flex items-center gap-1" title="Highveld Sunshine Daylight">
+                        <i data-feather="sun" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Sun Day</span>
+                    </button>
+                    <button onclick="set3DLighting('sunset')" id="light-btn-sunset" class="px-2 py-1 rounded font-semibold text-slate-300 hover:text-white flex items-center gap-1" title="Cape Sunset Twilight">
+                        <i data-feather="sunset" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Sunset</span>
+                    </button>
+                    <button onclick="set3DLighting('night')" id="light-btn-night" class="px-2 py-1 rounded font-semibold text-slate-300 hover:text-white flex items-center gap-1" title="Architectural Night Illumination">
+                        <i data-feather="moon" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Night Glow</span>
+                    </button>
+                    <button onclick="set3DLighting('hologram')" id="light-btn-hologram" class="px-2 py-1 rounded font-semibold text-slate-300 hover:text-white flex items-center gap-1" title="CAD Blueprint Wireframe">
+                        <i data-feather="cpu" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Hologram</span>
+                    </button>
+                </div>
+
+                <div class="h-4 w-px bg-slate-700 hidden sm:block"></div>
+
+                <!-- Camera Angle Shortcuts -->
+                <div class="flex items-center gap-1 bg-slate-800/80 p-1 rounded-lg border border-slate-700">
+                    <button onclick="setCameraView('perspective')" class="px-2 py-1 rounded hover:bg-slate-700 text-slate-200" title="3D Orbit View">Orbit</button>
+                    <button onclick="setCameraView('front')" class="px-2 py-1 rounded hover:bg-slate-700 text-slate-200" title="Front Elevation">Front</button>
+                    <button onclick="setCameraView('patio')" class="px-2 py-1 rounded hover:bg-slate-700 text-slate-200" title="Covered Braai & Pool View">Patio & Pool</button>
+                    <button onclick="setCameraView('top')" class="px-2 py-1 rounded hover:bg-slate-700 text-slate-200" title="Top-Down Floorplan Cutaway">Top Plan</button>
+                </div>
+            </div>
+
+            <!-- Dimensions Indicator Badge -->
+            <div class="absolute bottom-4 left-4 z-20 bg-slate-900/90 backdrop-blur-md px-4 py-2.5 rounded-xl border border-slate-700 shadow-xl text-white flex flex-wrap items-center gap-4 sm:gap-6">
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">Total Area</div>
+                    <div id="stat-area" class="text-sm font-bold font-mono text-amber-400">420 m² (4,520 sq ft)</div>
+                </div>
+                <div class="h-6 w-px bg-slate-700"></div>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">Footprint Dimensions</div>
+                    <div id="stat-dimensions" class="text-sm font-bold font-mono text-blue-400">19m × 22m</div>
+                </div>
+                <div class="h-6 w-px bg-slate-700"></div>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">Rooms / Levels</div>
+                    <div id="stat-rooms-count" class="text-sm font-bold font-mono text-slate-200">17 Rooms • 2 Levels</div>
+                </div>
+            </div>
+
+            <!-- 2D Canvas Container -->
+            <div id="container-2d" class="w-full h-full relative overflow-hidden flex items-center justify-center blueprint-paper">
+                <canvas id="blueprint-canvas" class="cursor-crosshair w-full h-full"></canvas>
+            </div>
+
+            <!-- 3D WebGL Canvas Container -->
+            <div id="container-3d" class="hidden w-full h-full relative overflow-hidden bg-slate-950">
+                <canvas id="three-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+            </div>
+        </main>
+
+        <!-- Right Sidebar: Room Properties & Inspector -->
+        <aside class="w-80 bg-white border-l border-slate-200 flex flex-col flex-shrink-0 z-20 overflow-y-auto">
+            <div class="p-4 border-b border-slate-200 bg-slate-50/70">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800 text-sm">Room Inspector</h3>
+                    <span id="inspector-level-indicator" class="text-[10px] font-bold px-2 py-0.5 bg-blue-100 text-blue-800 rounded">Level 1 (Ground)</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">Select any room on the blueprint to adjust its dimensions, level, and material.</p>
+            </div>
+
+            <div id="inspector-content" class="p-4 space-y-4">
+                <div id="no-selection-msg" class="text-center py-12 text-slate-400">
+                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
+                        <i data-feather="mouse-pointer" class="w-5 h-5"></i>
+                    </div>
+                    <p class="text-xs font-medium text-slate-600">No room selected</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Click on any room on the canvas to inspect and modify its architectural specs.</p>
+                </div>
+
+                <div id="room-editor-form" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Room Label</label>
+                        <input id="prop-name" type="text" oninput="updateSelectedRoomProp('name', this.value)" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Room Category</label>
+                            <select id="prop-type" onchange="updateSelectedRoomProp('type', this.value)" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none">
+                                <option value="Living Room">Living Room</option>
+                                <option value="Patio">Covered Braai Patio</option>
+                                <option value="Pool">Swimming Pool</option>
+                                <option value="Boma">Boma / Firepit</option>
+                                <option value="Kitchen">Kitchen & Island</option>
+                                <option value="Scullery">Scullery & Laundry</option>
+                                <option value="Dining Room">Dining Room</option>
+                                <option value="Master Bedroom">Master Suite</option>
+                                <option value="Bedroom">Bedroom</option>
+                                <option value="Pyjama Lounge">Pyjama Lounge</option>
+                                <option value="Bathroom">Bathroom</option>
+                                <option value="Office">Office / Study</option>
+                                <option value="Garage">Garage</option>
+                                <option value="Staff">Staff Quarters</option>
+                                <option value="Balcony">Glass Balcony</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Floor Level</label>
+                            <select id="prop-level" onchange="updateSelectedRoomProp('level', parseInt(this.value))" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none">
+                                <option value="1">Ground Floor (L1)</option>
+                                <option value="2">Upper Floor (L2)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Material Finish for 3D realism -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Architectural Material (3D)</label>
+                        <select id="prop-material" onchange="updateSelectedRoomProp('material', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none">
+                            <option value="stucco">Contemporary Stucco Plaster</option>
+                            <option value="stone">Rustenburg Stacked Stone Cladding</option>
+                            <option value="timber">Warm Timber Decking & Slat Pergola</option>
+                            <option value="water">Crystal Swimming Pool Water</option>
+                            <option value="glass">Frameless Glass & Aluminium</option>
+                        </select>
+                    </div>
+
+                    <!-- Dimensions -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label id="label-prop-width" class="block text-xs font-semibold text-slate-700 mb-1">Width (meters)</label>
+                            <div class="relative">
+                                <input id="prop-width" type="number" min="2" max="30" step="0.5" onchange="updateRoomDimension('width', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-800 pr-8 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none">
+                                <span id="prop-unit-w" class="absolute right-2.5 top-1.5 text-slate-400 text-xs font-mono">m</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label id="label-prop-height" class="block text-xs font-semibold text-slate-700 mb-1">Length (meters)</label>
+                            <div class="relative">
+                                <input id="prop-height" type="number" min="2" max="30" step="0.5" onchange="updateRoomDimension('height', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-800 pr-8 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none">
+                                <span id="prop-unit-h" class="absolute right-2.5 top-1.5 text-slate-400 text-xs font-mono">m</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color palette -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Blueprint Color Indicator</label>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="setRoomColor('#e0f2fe', '#0369a1')" class="w-6 h-6 rounded-full bg-blue-200 border-2 border-slate-300 hover:scale-110 transition shadow-sm"></button>
+                            <button type="button" onclick="setRoomColor('#fef08a', '#a16207')" class="w-6 h-6 rounded-full bg-amber-200 border-2 border-slate-300 hover:scale-110 transition shadow-sm"></button>
+                            <button type="button" onclick="setRoomColor('#38bdf8', '#0369a1')" class="w-6 h-6 rounded-full bg-sky-300 border-2 border-slate-300 hover:scale-110 transition shadow-sm"></button>
+                            <button type="button" onclick="setRoomColor('#fbcfe8', '#9d174d')" class="w-6 h-6 rounded-full bg-pink-200 border-2 border-slate-300 hover:scale-110 transition shadow-sm"></button>
+                            <button type="button" onclick="setRoomColor('#ede9fe', '#6d28d9')" class="w-6 h-6 rounded-full bg-purple-200 border-2 border-slate-300 hover:scale-110 transition shadow-sm"></button>
+                            <button type="button" onclick="setRoomColor('#dcfce7', '#15803d')" class="w-6 h-6 rounded-full bg-emerald-200 border-2 border-slate-300 hover:scale-110 transition shadow-sm"></button>
+                            <button type="button" onclick="setRoomColor('#fed7aa', '#9a3412')" class="w-6 h-6 rounded-full bg-orange-200 border-2 border-slate-300 hover:scale-110 transition shadow-sm"></button>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200 flex flex-col gap-2">
+                        <button type="button" onclick="deleteSelectedRoom()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold py-2 rounded-lg transition border border-rose-200 flex items-center justify-center gap-1.5">
+                            <i data-feather="trash-2" class="w-3.5 h-3.5"></i>
+                            <span>Delete Room</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- AI Blueprint Generator Modal -->
+    <div id="ai-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-100">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-sm">
+                        <i data-feather="zap" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">AI South African House Plan Generator</h3>
+                        <p class="text-xs text-slate-500">Generate architectural plans with braai patios, pools, sculleries & pyjama lounges</p>
+                    </div>
+                </div>
+                <button onclick="closeAiModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i data-feather="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Architectural Brief / Prompt</label>
+                    <textarea id="ai-prompt-input" rows="3" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none placeholder-slate-400" placeholder="e.g., 4 bedroom double-storey luxury dream home with covered braai patio, rim-flow swimming pool, scullery, pyjama lounge and double garage"></textarea>
+                </div>
+
+                <div>
+                    <div class="text-xs font-semibold text-slate-500 mb-2">Popular South African Archid Presets:</div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="setAiPrompt('4 bedroom contemporary double storey with braai patio, swimming pool, pyjama lounge and staff quarters')" class="text-xs bg-slate-100 hover:bg-amber-50 hover:text-amber-800 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 transition">4-Bed SA Luxury Double-Storey</button>
+                        <button type="button" onclick="setAiPrompt('3 bedroom modern single-story villa with covered braai patio, boma firepit, and pool')" class="text-xs bg-slate-100 hover:bg-amber-50 hover:text-amber-800 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 transition">3-Bed Contemporary Villa & Boma</button>
+                        <button type="button" onclick="setAiPrompt('5 bedroom signature estate home with cinema, wine cellar, rim-flow pool and 3-car garage')" class="text-xs bg-slate-100 hover:bg-amber-50 hover:text-amber-800 text-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-200 transition">5-Bed Architectural Masterpiece</button>
+                    </div>
+                </div>
+
+                <div id="ai-loading" class="hidden py-4 text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-600 border-t-transparent mb-2"></div>
+                    <p class="text-xs text-slate-600 font-semibold">Generating architectural room layout & spatial flow...</p>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeAiModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancel</button>
+                    <button type="button" onclick="generateAiFloorplan()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white transition shadow-md shadow-amber-600/25 flex items-center gap-1.5">
+                        <i data-feather="cpu" class="w-3.5 h-3.5"></i>
+                        <span>Generate Floorplan</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 text-xs font-semibold transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2">
+        <i data-feather="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toast-msg">Plan updated successfully</span>
+    </div>
+
+    <script>
+        // Preset Plans (South African Archid Dream House Plans)
+        let presets = {};
+
+        // State Management
+        let currentPlan = {
+            id: 'serengeti-double-storey',
+            title: 'The Serengeti - 4-Bedroom Contemporary Double-Storey',
+            category: 'Double Storey Luxury',
+            totalArea: '420 m² (4,520 sq ft)',
+            rooms: []
+        };
+
+        let selectedRoomId = null;
+        let isDraggingRoom = false;
+        let dragOffset = { x: 0, y: 0 };
+        let viewMode = '2d'; // '2d' or '3d'
+        let currentLevelFilter = 'all'; // 'all', 1, 2
+        let unitMode = 'metric'; // 'metric' (m²) or 'imperial' (sq ft)
+        let zoom = 0.9;
+        let panOffset = { x: 40, y: 30 };
+
+        // 3D Scene Variables
+        let threeScene, threeCamera, threeRenderer, threeHouseGroup;
+        let isThreeDragging = false;
+        let prevThreeMouse = { x: 0, y: 0 };
+        let current3DLighting = 'day';
+        let poolWaterTime = 0;
+        let poolWaterMesh = null;
+
+        // Canvas 2D Elements
+        const canvas2d = document.getElementById('blueprint-canvas');
+        const ctx2d = canvas2d.getContext('2d');
+
+        // Texture Generators for Procedural Realistic 3D Materials
+        let stoneTexture, timberTexture, grassTexture, pavingTexture;
+
+        function createProceduralTextures() {
+            // Stone texture for cladding
+            const cStone = document.createElement('canvas');
+            cStone.width = 256;
+            cStone.height = 256;
+            const ctxStone = cStone.getContext('2d');
+            ctxStone.fillStyle = '#64748b';
+            ctxStone.fillRect(0, 0, 256, 256);
+            for (let y = 0; y < 256; y += 32) {
+                for (let x = 0; x < 256; x += 64) {
+                    const off = (y / 32) % 2 === 0 ? 0 : 32;
+                    ctxStone.fillStyle = (Math.random() > 0.5) ? '#475569' : '#334155';
+                    ctxStone.fillRect(x + off + 2, y + 2, 60, 28);
+                    ctxStone.strokeStyle = '#1e293b';
+                    ctxStone.strokeRect(x + off + 2, y + 2, 60, 28);
+                }
+            }
+            stoneTexture = new THREE.CanvasTexture(cStone);
+            stoneTexture.wrapS = THREE.RepeatWrapping;
+            stoneTexture.wrapT = THREE.RepeatWrapping;
+            stoneTexture.repeat.set(2, 2);
+
+            // Timber texture for decks and pergolas
+            const cWood = document.createElement('canvas');
+            cWood.width = 128;
+            cWood.height = 128;
+            const ctxWood = cWood.getContext('2d');
+            ctxWood.fillStyle = '#92400e';
+            ctxWood.fillRect(0, 0, 128, 128);
+            for (let i = 0; i < 128; i += 16) {
+                ctxWood.fillStyle = (i % 32 === 0) ? '#78350f' : '#b45309';
+                ctxWood.fillRect(0, i, 128, 14);
+                ctxWood.fillStyle = '#451a03';
+                ctxWood.fillRect(0, i + 14, 128, 2);
+            }
+            timberTexture = new THREE.CanvasTexture(cWood);
+            timberTexture.wrapS = THREE.RepeatWrapping;
+            timberTexture.wrapT = THREE.RepeatWrapping;
+            timberTexture.repeat.set(3, 3);
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof feather !== 'undefined') feather.replace();
+
+            createProceduralTextures();
+
+            // Fetch presets from API
+            try {
+                const res = await fetch('/api/templates');
+                const list = await res.json();
+                list.forEach(item => presets[item.id] = item);
+            } catch (err) {
+                console.error('Could not load templates', err);
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const templateKey = urlParams.get('template') || 'serengeti-double-storey';
+            
+            if (presets[templateKey]) {
+                loadPreset(templateKey);
+                const sel = document.getElementById('preset-selector');
+                if (sel) sel.value = templateKey;
+            } else {
+                // Fallback default
+                loadPreset('serengeti-double-storey');
+            }
+
+            init2DCanvas();
+            init3DScene();
+        });
+
+        function loadPreset(key) {
+            if (!presets[key]) return;
+            const t = presets[key];
+            currentPlan = JSON.parse(JSON.stringify(t));
+            document.getElementById('plan-title-input').value = currentPlan.title;
+            const badge = document.getElementById('plan-category-badge');
+            if (badge) badge.innerText = currentPlan.category || 'South African Modern';
+
+            selectedRoomId = null;
+            updateInspector();
+            updateStats();
+            draw2DBlueprint();
+            if (viewMode === '3d') update3DHouse();
+            showToast(`Loaded ${currentPlan.title}`);
+        }
+
+        // Unit Mode Toggle
+        function toggleUnitMode() {
+            unitMode = (unitMode === 'metric') ? 'imperial' : 'metric';
+            document.getElementById('unit-label').innerText = (unitMode === 'metric') ? 'Metric (m²)' : 'Imperial (sq ft)';
+            document.getElementById('label-prop-width').innerText = (unitMode === 'metric') ? 'Width (meters)' : 'Width (ft)';
+            document.getElementById('label-prop-height').innerText = (unitMode === 'metric') ? 'Length (meters)' : 'Length (ft)';
+            document.getElementById('prop-unit-w').innerText = (unitMode === 'metric') ? 'm' : 'ft';
+            document.getElementById('prop-unit-h').innerText = (unitMode === 'metric') ? 'm' : 'ft';
+            updateInspector();
+            updateStats();
+            draw2DBlueprint();
+        }
+
+        // Level Filter Switcher
+        function setLevelFilter(lvl) {
+            currentLevelFilter = lvl;
+            ['all', 1, 2].forEach(k => {
+                const btn = document.getElementById(`level-btn-${k}`);
+                if (btn) {
+                    if (k === lvl) {
+                        btn.className = 'px-2.5 py-1 rounded-md font-semibold bg-white text-amber-700 shadow-sm transition';
+                    } else {
+                        btn.className = 'px-2.5 py-1 rounded-md font-semibold text-slate-600 hover:text-slate-900 transition';
+                    }
+                }
+            });
+            draw2DBlueprint();
+        }
+
+        // View Mode Switch (2D vs 3D)
+        function switchViewMode(mode) {
+            viewMode = mode;
+            const btn2d = document.getElementById('view-mode-2d');
+            const btn3d = document.getElementById('view-mode-3d');
+            const container2d = document.getElementById('container-2d');
+            const container3d = document.getElementById('container-3d');
+            const toolbar2d = document.getElementById('toolbar-2d');
+            const toolbar3d = document.getElementById('toolbar-3d');
+
+            if (mode === '2d') {
+                btn2d.className = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-white text-blue-700 shadow-sm transition flex items-center gap-1.5';
+                btn3d.className = 'px-3 py-1.5 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+                container2d.classList.remove('hidden');
+                container3d.classList.add('hidden');
+                toolbar2d.classList.remove('hidden');
+                toolbar3d.classList.add('hidden');
+                draw2DBlueprint();
+            } else {
+                btn3d.className = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-white text-amber-700 shadow-sm transition flex items-center gap-1.5';
+                btn2d.className = 'px-3 py-1.5 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+                container2d.classList.add('hidden');
+                container3d.classList.remove('hidden');
+                toolbar2d.classList.add('hidden');
+                toolbar3d.classList.remove('hidden');
+                update3DHouse();
+            }
+        }
+
+        // 2D Blueprint Engine
+        function init2DCanvas() {
+            function resize() {
+                const parent = canvas2d.parentElement;
+                canvas2d.width = parent.clientWidth;
+                canvas2d.height = parent.clientHeight;
+                draw2DBlueprint();
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            canvas2d.addEventListener('mousedown', (e) => {
+                const rect = canvas2d.getBoundingClientRect();
+                const mouseX = (e.clientX - rect.left - panOffset.x) / zoom;
+                const mouseY = (e.clientY - rect.top - panOffset.y) / zoom;
+
+                let clickedRoom = null;
+                // Filter by level if active
+                const filteredRooms = currentPlan.rooms.filter(r => {
+                    if (currentLevelFilter === 'all') return true;
+                    return (r.level || 1) === currentLevelFilter;
+                });
+
+                for (let i = filteredRooms.length - 1; i >= 0; i--) {
+                    const r = filteredRooms[i];
+                    if (mouseX >= r.x && mouseX <= r.x + r.width &&
+                        mouseY >= r.y && mouseY <= r.y + r.height) {
+                        clickedRoom = r;
+                        break;
+                    }
+                }
+
+                if (clickedRoom) {
+                    selectedRoomId = clickedRoom.id;
+                    isDraggingRoom = true;
+                    dragOffset.x = mouseX - clickedRoom.x;
+                    dragOffset.y = mouseY - clickedRoom.y;
+                } else {
+                    selectedRoomId = null;
+                }
+
+                updateInspector();
+                draw2DBlueprint();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingRoom || !selectedRoomId) return;
+                const rect = canvas2d.getBoundingClientRect();
+                const mouseX = (e.clientX - rect.left - panOffset.x) / zoom;
+                const mouseY = (e.clientY - rect.top - panOffset.y) / zoom;
+
+                const room = currentPlan.rooms.find(r => r.id === selectedRoomId);
+                if (room) {
+                    // Snap to 10px architectural grid
+                    room.x = Math.round((mouseX - dragOffset.x) / 10) * 10;
+                    room.y = Math.round((mouseY - dragOffset.y) / 10) * 10;
+                    draw2DBlueprint();
+                    updateStats();
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDraggingRoom) {
+                    isDraggingRoom = false;
+                    if (viewMode === '3d') update3DHouse();
+                }
+            });
+        }
+
+        function draw2DBlueprint() {
+            ctx2d.clearRect(0, 0, canvas2d.width, canvas2d.height);
+            ctx2d.save();
+            ctx2d.translate(panOffset.x, panOffset.y);
+            ctx2d.scale(zoom, zoom);
+
+            // Draw North Arrow
+            ctx2d.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx2d.beginPath();
+            ctx2d.arc(60, 60, 24, 0, Math.PI * 2);
+            ctx2d.fill();
+            ctx2d.fillStyle = '#f59e0b';
+            ctx2d.beginPath();
+            ctx2d.moveTo(60, 42);
+            ctx2d.lineTo(54, 64);
+            ctx2d.lineTo(60, 58);
+            ctx2d.lineTo(66, 64);
+            ctx2d.closePath();
+            ctx2d.fill();
+            ctx2d.fillStyle = '#ffffff';
+            ctx2d.font = 'bold 10px sans-serif';
+            ctx2d.textAlign = 'center';
+            ctx2d.fillText('N', 60, 78);
+
+            // Draw rooms
+            currentPlan.rooms.forEach(room => {
+                const roomLevel = room.level || 1;
+                const isGhost = (currentLevelFilter !== 'all' && currentLevelFilter !== roomLevel);
+                const isSelected = room.id === selectedRoomId;
+
+                ctx2d.save();
+                if (isGhost) {
+                    ctx2d.globalAlpha = 0.2;
+                }
+
+                // Room Fill
+                ctx2d.fillStyle = room.color || '#e0f2fe';
+                ctx2d.fillRect(room.x, room.y, room.width, room.height);
+
+                // Architectural patterns / accents
+                if (room.type === 'Pool') {
+                    ctx2d.strokeStyle = '#0284c7';
+                    ctx2d.lineWidth = 1;
+                    for (let py = room.y + 15; py < room.y + room.height; py += 20) {
+                        ctx2d.beginPath();
+                        ctx2d.moveTo(room.x + 10, py);
+                        ctx2d.bezierCurveTo(room.x + room.width / 3, py - 5, room.x + 2 * room.width / 3, py + 5, room.x + room.width - 10, py);
+                        ctx2d.stroke();
+                    }
+                } else if (room.type === 'Patio') {
+                    // Timber pergola slatted lines
+                    ctx2d.strokeStyle = '#d97706';
+                    ctx2d.lineWidth = 1.5;
+                    for (let px = room.x + 20; px < room.x + room.width; px += 25) {
+                        ctx2d.beginPath();
+                        ctx2d.moveTo(px, room.y);
+                        ctx2d.lineTo(px, room.y + room.height);
+                        ctx2d.stroke();
+                    }
+                    // Braai grill badge
+                    ctx2d.fillStyle = '#b45309';
+                    ctx2d.fillRect(room.x + room.width - 35, room.y + 10, 25, 25);
+                    ctx2d.fillStyle = '#ffffff';
+                    ctx2d.font = 'bold 9px sans-serif';
+                    ctx2d.fillText('BRAAI', room.x + room.width - 22, room.y + 26);
+                } else if (room.type === 'Boma') {
+                    // Boma circular fire pit
+                    ctx2d.strokeStyle = '#ea580c';
+                    ctx2d.lineWidth = 2;
+                    ctx2d.beginPath();
+                    ctx2d.arc(room.x + room.width / 2, room.y + room.height / 2, Math.min(room.width, room.height) * 0.35, 0, Math.PI * 2);
+                    ctx2d.stroke();
+                    ctx2d.fillStyle = '#c2410c';
+                    ctx2d.beginPath();
+                    ctx2d.arc(room.x + room.width / 2, room.y + room.height / 2, 10, 0, Math.PI * 2);
+                    ctx2d.fill();
+                }
+
+                // Room Walls (Thick architectural outer lines)
+                ctx2d.strokeStyle = isSelected ? '#3b82f6' : '#1e293b';
+                ctx2d.lineWidth = isSelected ? 3.5 : 2;
+                ctx2d.strokeRect(room.x, room.y, room.width, room.height);
+
+                // Level 2 Badge
+                if (roomLevel === 2) {
+                    ctx2d.fillStyle = '#6d28d9';
+                    ctx2d.fillRect(room.x + 4, room.y + 4, 40, 16);
+                    ctx2d.fillStyle = '#ffffff';
+                    ctx2d.font = 'bold 9px sans-serif';
+                    ctx2d.textAlign = 'center';
+                    ctx2d.fillText('L2 UPPER', room.x + 24, room.y + 15);
+                }
+
+                // Selection Box
+                if (isSelected) {
+                    ctx2d.strokeStyle = '#f59e0b';
+                    ctx2d.lineWidth = 1.5;
+                    ctx2d.setLineDash([4, 4]);
+                    ctx2d.strokeRect(room.x - 4, room.y - 4, room.width + 8, room.height + 8);
+                    ctx2d.setLineDash([]);
+                }
+
+                // Room Label
+                ctx2d.fillStyle = room.labelColor || '#0f172a';
+                ctx2d.font = 'bold 12px sans-serif';
+                ctx2d.textAlign = 'center';
+                ctx2d.textBaseline = 'middle';
+                ctx2d.fillText(room.name, room.x + room.width / 2, room.y + room.height / 2 - 8);
+
+                // Dimension calculations
+                const widthM = (room.width / 35).toFixed(1);
+                const heightM = (room.height / 35).toFixed(1);
+                const areaM2 = (widthM * heightM).toFixed(1);
+
+                const widthFt = Math.round(room.width / 12);
+                const heightFt = Math.round(room.height / 12);
+                const areaSqft = widthFt * heightFt;
+
+                ctx2d.font = '10px monospace';
+                ctx2d.fillStyle = '#475569';
+                if (unitMode === 'metric') {
+                    ctx2d.fillText(`${widthM}m × ${heightM}m (${areaM2} m²)`, room.x + room.width / 2, room.y + room.height / 2 + 10);
+                } else {
+                    ctx2d.fillText(`${widthFt}' × ${heightFt}' (${areaSqft} sq ft)`, room.x + room.width / 2, room.y + room.height / 2 + 10);
+                }
+
+                // Architectural door swing
+                ctx2d.beginPath();
+                ctx2d.strokeStyle = '#94a3b8';
+                ctx2d.lineWidth = 1.2;
+                ctx2d.arc(room.x + 20, room.y, 16, 0, Math.PI / 2, false);
+                ctx2d.stroke();
+
+                ctx2d.restore();
+            });
+
+            ctx2d.restore();
+        }
+
+        // 3D Realistic Three.js Engine
+        function init3DScene() {
+            const canvas3d = document.getElementById('three-canvas');
+            if (!canvas3d) return;
+
+            threeScene = new THREE.Scene();
+            threeScene.background = new THREE.Color(0x0e1726);
+
+            threeCamera = new THREE.PerspectiveCamera(45, canvas3d.clientWidth / canvas3d.clientHeight, 0.1, 1000);
+            threeCamera.position.set(30, 24, 38);
+            threeCamera.lookAt(0, 2, 0);
+
+            threeRenderer = new THREE.WebGLRenderer({ canvas: canvas3d, antialias: true });
+            threeRenderer.setSize(canvas3d.clientWidth, canvas3d.clientHeight);
+            threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            threeRenderer.shadowMap.enabled = true;
+            threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // Site Grass & Ground
+            const groundGeo = new THREE.PlaneGeometry(120, 120);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x1e3a1e, roughness: 0.9, metalness: 0.1 });
+            const groundMesh = new THREE.Mesh(groundGeo, groundMat);
+            groundMesh.rotation.x = -Math.PI / 2;
+            groundMesh.position.y = -0.05;
+            groundMesh.receiveShadow = true;
+            threeScene.add(groundMesh);
+
+            // Paved Motor Court / Driveway
+            const driveGeo = new THREE.PlaneGeometry(50, 40);
+            const driveMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 });
+            const driveMesh = new THREE.Mesh(driveGeo, driveMat);
+            driveMesh.rotation.x = -Math.PI / 2;
+            driveMesh.position.set(12, 0, 18);
+            driveMesh.receiveShadow = true;
+            threeScene.add(driveMesh);
+
+            // Architectural Grid Helper
+            const grid = new THREE.GridHelper(80, 40, 0x475569, 0x1e293b);
+            grid.position.y = 0.01;
+            threeScene.add(grid);
+
+            // Lights
+            applyLightingPreset('day');
+
+            threeHouseGroup = new THREE.Group();
+            threeScene.add(threeHouseGroup);
+
+            // Interaction mouse drag
+            canvas3d.addEventListener('mousedown', (e) => {
+                isThreeDragging = true;
+                prevThreeMouse.x = e.clientX;
+                prevThreeMouse.y = e.clientY;
+            });
+
+            window.addEventListener('mouseup', () => isThreeDragging = false);
+
+            canvas3d.addEventListener('mousemove', (e) => {
+                if (!isThreeDragging) return;
+                const dx = e.clientX - prevThreeMouse.x;
+                const dy = e.clientY - prevThreeMouse.y;
+                threeHouseGroup.rotation.y += dx * 0.008;
+                threeHouseGroup.rotation.x = Math.max(-0.5, Math.min(0.8, threeHouseGroup.rotation.x + dy * 0.008));
+                prevThreeMouse.x = e.clientX;
+                prevThreeMouse.y = e.clientY;
+            });
+
+            canvas3d.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                threeCamera.position.z = Math.max(10, Math.min(90, threeCamera.position.z + e.deltaY * 0.05));
+            });
+
+            function animate3D() {
+                requestAnimationFrame(animate3D);
+                if (viewMode === '3d') {
+                    if (!isThreeDragging) {
+                        threeHouseGroup.rotation.y += 0.0015;
+                    }
+                    if (poolWaterMesh) {
+                        poolWaterTime += 0.03;
+                        poolWaterMesh.position.y = 0.15 + Math.sin(poolWaterTime) * 0.02;
+                    }
+                    threeRenderer.render(threeScene, threeCamera);
+                }
+            }
+            animate3D();
+
+            window.addEventListener('resize', () => {
+                if (viewMode === '3d') {
+                    threeCamera.aspect = canvas3d.clientWidth / canvas3d.clientHeight;
+                    threeCamera.updateProjectionMatrix();
+                    threeRenderer.setSize(canvas3d.clientWidth, canvas3d.clientHeight, false);
+                }
+            });
+        }
+
+        // Lighting presets
+        function applyLightingPreset(mode) {
+            current3DLighting = mode;
+
+            // Remove existing lights
+            const lightsToRemove = [];
+            threeScene.children.forEach(c => {
+                if (c.isLight) lightsToRemove.push(c);
+            });
+            lightsToRemove.forEach(l => threeScene.remove(l));
+
+            ['day', 'sunset', 'night', 'hologram'].forEach(k => {
+                const btn = document.getElementById(`light-btn-${k}`);
+                if (btn) {
+                    if (k === mode) {
+                        btn.className = 'px-2 py-1 rounded font-semibold bg-amber-500 text-slate-950 flex items-center gap-1';
+                    } else {
+                        btn.className = 'px-2 py-1 rounded font-semibold text-slate-300 hover:text-white flex items-center gap-1';
+                    }
+                }
+            });
+
+            if (mode === 'day') {
+                threeScene.background = new THREE.Color(0x93c5fd); // Light South African sky
+                const ambient = new THREE.AmbientLight(0xffffff, 0.85);
+                threeScene.add(ambient);
+                const sun = new THREE.DirectionalLight(0xfffbeb, 1.4);
+                sun.position.set(25, 45, 30);
+                sun.castShadow = true;
+                threeScene.add(sun);
+            } else if (mode === 'sunset') {
+                threeScene.background = new THREE.Color(0x31102f); // Sunset purple dusk
+                const ambient = new THREE.AmbientLight(0xfb923c, 0.6);
+                threeScene.add(ambient);
+                const sunsetSun = new THREE.DirectionalLight(0xf97316, 1.8);
+                sunsetSun.position.set(40, 15, -20);
+                threeScene.add(sunsetSun);
+                // Warm patio interior light
+                const warmLight = new THREE.PointLight(0xfef08a, 2, 40);
+                warmLight.position.set(0, 4, 0);
+                threeScene.add(warmLight);
+            } else if (mode === 'night') {
+                threeScene.background = new THREE.Color(0x060913); // Midnight navy
+                const ambient = new THREE.AmbientLight(0x1e293b, 0.4);
+                threeScene.add(ambient);
+                // Architectural uplights & pool glow
+                const poolGlow = new THREE.PointLight(0x38bdf8, 3, 25);
+                poolGlow.position.set(-6, 1, 6);
+                threeScene.add(poolGlow);
+                const interiorGlow = new THREE.PointLight(0xfde047, 2.5, 30);
+                interiorGlow.position.set(4, 3, -4);
+                threeScene.add(interiorGlow);
+            } else if (mode === 'hologram') {
+                threeScene.background = new THREE.Color(0x030712);
+                const ambient = new THREE.AmbientLight(0x0284c7, 1);
+                threeScene.add(ambient);
+                const holoLight = new THREE.PointLight(0x38bdf8, 2, 50);
+                holoLight.position.set(0, 20, 0);
+                threeScene.add(holoLight);
+            }
+
+            if (viewMode === '3d') update3DHouse();
+        }
+
+        function set3DLighting(mode) {
+            applyLightingPreset(mode);
+        }
+
+        function setCameraView(preset) {
+            if (!threeCamera) return;
+            if (preset === 'perspective') {
+                threeCamera.position.set(30, 24, 38);
+                threeCamera.lookAt(0, 2, 0);
+            } else if (preset === 'front') {
+                threeCamera.position.set(0, 12, 45);
+                threeCamera.lookAt(0, 2, 0);
+            } else if (preset === 'patio') {
+                threeCamera.position.set(-18, 10, 22);
+                threeCamera.lookAt(-4, 1, 4);
+            } else if (preset === 'top') {
+                threeCamera.position.set(0, 50, 0.1);
+                threeCamera.lookAt(0, 0, 0);
+            }
+        }
+
+        // Build Realistic 3D House Model
+        function update3DHouse() {
+            if (!threeHouseGroup) return;
+
+            while (threeHouseGroup.children.length > 0) {
+                const obj = threeHouseGroup.children[0];
+                threeHouseGroup.remove(obj);
+            }
+
+            poolWaterMesh = null;
+
+            // Center calculations
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            currentPlan.rooms.forEach(r => {
+                minX = Math.min(minX, r.x);
+                maxX = Math.max(maxX, r.x + r.width);
+                minY = Math.min(minY, r.y);
+                maxY = Math.max(maxY, r.y + r.height);
+            });
+
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
+            const scale = 0.055;
+            const wallHeight = 2.8;
+            const wallThickness = 0.22;
+
+            const isHolo = (current3DLighting === 'hologram');
+
+            // Realistic Materials
+            const stuccoMat = isHolo ? 
+                new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true }) :
+                new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.7, metalness: 0.05 });
+
+            const stoneMat = isHolo ?
+                new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true }) :
+                new THREE.MeshStandardMaterial({ map: stoneTexture, color: 0xe2e8f0, roughness: 0.85, metalness: 0.1 });
+
+            const timberMat = isHolo ?
+                new THREE.MeshBasicMaterial({ color: 0xd97706, wireframe: true }) :
+                new THREE.MeshStandardMaterial({ map: timberTexture, color: 0xd97706, roughness: 0.6, metalness: 0.1 });
+
+            const glassMat = new THREE.MeshPhysicalMaterial({
+                color: 0x93c5fd,
+                transparent: true,
+                opacity: 0.45,
+                roughness: 0.1,
+                transmission: 0.9,
+                thickness: 0.5
+            });
+
+            const waterMat = new THREE.MeshPhysicalMaterial({
+                color: 0x0284c7,
+                transparent: true,
+                opacity: 0.85,
+                roughness: 0.1,
+                metalness: 0.2
+            });
+
+            const darkFrameMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4 });
+
+            currentPlan.rooms.forEach(room => {
+                const rw = room.width * scale;
+                const rd = room.height * scale;
+                const rx = (room.x + room.width / 2 - centerX) * scale;
+                const rz = (room.y + room.height / 2 - centerY) * scale;
+                const level = room.level || 1;
+                const baseY = (level === 2) ? (wallHeight + 0.15) : 0;
+
+                // 1. Specific South African Zones
+                if (room.type === 'Pool') {
+                    // Pool Basin Coping
+                    const poolBorderGeo = new THREE.BoxGeometry(rw, 0.2, rd);
+                    const poolBorderMat = stoneMat;
+                    const poolBorder = new THREE.Mesh(poolBorderGeo, poolBorderMat);
+                    poolBorder.position.set(rx, 0.1, rz);
+                    threeHouseGroup.add(poolBorder);
+
+                    // Pool Water
+                    const waterGeo = new THREE.BoxGeometry(rw * 0.85, 0.18, rd * 0.85);
+                    poolWaterMesh = new THREE.Mesh(waterGeo, waterMat);
+                    poolWaterMesh.position.set(rx, 0.15, rz);
+                    threeHouseGroup.add(poolWaterMesh);
+
+                    // Sun Loungers
+                    const loungerGeo = new THREE.BoxGeometry(rw * 0.2, 0.15, rd * 0.35);
+                    const lounger = new THREE.Mesh(loungerGeo, timberMat);
+                    lounger.position.set(rx + rw * 0.3, 0.25, rz);
+                    threeHouseGroup.add(lounger);
+                    return;
+                }
+
+                if (room.type === 'Patio') {
+                    // Timber Deck Floor
+                    const deckGeo = new THREE.BoxGeometry(rw, 0.12, rd);
+                    const deck = new THREE.Mesh(deckGeo, timberMat);
+                    deck.position.set(rx, 0.06, rz);
+                    threeHouseGroup.add(deck);
+
+                    // Pergola Timber Beams
+                    for (let b = -rw / 2 + 0.3; b <= rw / 2 - 0.3; b += 0.8) {
+                        const beamGeo = new THREE.BoxGeometry(0.12, 0.2, rd);
+                        const beam = new THREE.Mesh(beamGeo, timberMat);
+                        beam.position.set(rx + b, wallHeight, rz);
+                        threeHouseGroup.add(beam);
+                    }
+
+                    // Built-in South African Braai Unit with Chimney
+                    const braaiBaseGeo = new THREE.BoxGeometry(1.4, 1.2, 1.0);
+                    const braai = new THREE.Mesh(braaiBaseGeo, stoneMat);
+                    braai.position.set(rx + rw / 2 - 0.8, 0.6, rz - rd / 2 + 0.6);
+                    threeHouseGroup.add(braai);
+
+                    const chimneyGeo = new THREE.BoxGeometry(0.8, 2.5, 0.8);
+                    const chimney = new THREE.Mesh(chimneyGeo, stoneMat);
+                    chimney.position.set(rx + rw / 2 - 0.8, wallHeight + 0.8, rz - rd / 2 + 0.6);
+                    threeHouseGroup.add(chimney);
+                    return;
+                }
+
+                if (room.type === 'Boma') {
+                    // Sunken Boma Ring
+                    const bomaRingGeo = new THREE.CylinderGeometry(Math.min(rw, rd) * 0.45, Math.min(rw, rd) * 0.45, 0.3, 24);
+                    const bomaRing = new THREE.Mesh(bomaRingGeo, stoneMat);
+                    bomaRing.position.set(rx, 0.15, rz);
+                    threeHouseGroup.add(bomaRing);
+
+                    // Central Firepit
+                    const fireGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.35, 16);
+                    const fireMat = new THREE.MeshStandardMaterial({ color: 0xd97706, emissive: 0x9a3412, emissiveIntensity: 0.8 });
+                    const fire = new THREE.Mesh(fireGeo, fireMat);
+                    fire.position.set(rx, 0.2, rz);
+                    threeHouseGroup.add(fire);
+                    return;
+                }
+
+                if (room.type === 'Balcony') {
+                    // Balcony Floor Slab
+                    const balcSlab = new THREE.Mesh(new THREE.BoxGeometry(rw, 0.12, rd), timberMat);
+                    balcSlab.position.set(rx, baseY + 0.06, rz);
+                    threeHouseGroup.add(balcSlab);
+
+                    // Glass Balustrade
+                    const balustradeGeo = new THREE.BoxGeometry(rw, 1.0, 0.08);
+                    const balustrade = new THREE.Mesh(balustradeGeo, glassMat);
+                    balustrade.position.set(rx, baseY + 0.55, rz + rd / 2);
+                    threeHouseGroup.add(balustrade);
+
+                    const handrailGeo = new THREE.BoxGeometry(rw, 0.06, 0.1);
+                    const handrail = new THREE.Mesh(handrailGeo, darkFrameMat);
+                    handrail.position.set(rx, baseY + 1.05, rz + rd / 2);
+                    threeHouseGroup.add(handrail);
+                    return;
+                }
+
+                // 2. Standard Room Solid Construction
+                // Floor Slab
+                let floorMat = stuccoMat;
+                if (room.type === 'Kitchen' || room.type === 'Bathroom') {
+                    floorMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.3 });
+                } else if (room.type.includes('Bedroom')) {
+                    floorMat = timberMat;
+                }
+
+                const floorGeo = new THREE.BoxGeometry(rw, 0.12, rd);
+                const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+                floorMesh.position.set(rx, baseY + 0.06, rz);
+                floorMesh.receiveShadow = true;
+                threeHouseGroup.add(floorMesh);
+
+                // Room Walls Material Choice
+                const wallMatToUse = (room.material === 'stone') ? stoneMat : stuccoMat;
+
+                function addWall(w, h, d, px, py, pz, mat = wallMatToUse) {
+                    const geo = new THREE.BoxGeometry(w, h, d);
+                    const mesh = new THREE.Mesh(geo, mat);
+                    mesh.position.set(px, py, pz);
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = true;
+                    threeHouseGroup.add(mesh);
+                }
+
+                // 4 Walls around room
+                addWall(rw, wallHeight, wallThickness, rx, baseY + wallHeight / 2, rz - rd / 2);
+                addWall(rw, wallHeight, wallThickness, rx, baseY + wallHeight / 2, rz + rd / 2);
+                addWall(wallThickness, wallHeight, rd, rx - rw / 2, baseY + wallHeight / 2, rz);
+                addWall(wallThickness, wallHeight, rd, rx + rw / 2, baseY + wallHeight / 2, rz);
+
+                // Roof/Ceiling Parapet Slab
+                const ceilingGeo = new THREE.BoxGeometry(rw + 0.1, 0.12, rd + 0.1);
+                const ceilingMesh = new THREE.Mesh(ceilingGeo, darkFrameMat);
+                ceilingMesh.position.set(rx, baseY + wallHeight + 0.06, rz);
+                threeHouseGroup.add(ceilingMesh);
+
+                // Furniture cues inside room
+                if (room.type === 'Living Room' || room.type === 'Pyjama Lounge') {
+                    // Modern Sectional Couch
+                    const sofaGeo = new THREE.BoxGeometry(rw * 0.5, 0.4, rd * 0.25);
+                    const sofaMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 });
+                    const sofa = new THREE.Mesh(sofaGeo, sofaMat);
+                    sofa.position.set(rx, baseY + 0.26, rz);
+                    threeHouseGroup.add(sofa);
+                } else if (room.type.includes('Bedroom')) {
+                    // King Bed + Pillows
+                    const bedGeo = new THREE.BoxGeometry(rw * 0.45, 0.35, rd * 0.55);
+                    const bedMat = new THREE.MeshStandardMaterial({ color: 0x86198f, roughness: 0.5 });
+                    const bed = new THREE.Mesh(bedGeo, bedMat);
+                    bed.position.set(rx, baseY + 0.24, rz);
+                    threeHouseGroup.add(bed);
+                } else if (room.type === 'Kitchen') {
+                    // Kitchen Island Counter
+                    const islandGeo = new THREE.BoxGeometry(rw * 0.5, 0.55, rd * 0.25);
+                    const islandMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.2 });
+                    const island = new THREE.Mesh(islandGeo, islandMat);
+                    island.position.set(rx, baseY + 0.34, rz);
+                    threeHouseGroup.add(island);
+                } else if (room.type === 'Garage') {
+                    // Automobile
+                    const carGeo = new THREE.BoxGeometry(rw * 0.45, 0.65, rd * 0.6);
+                    const carMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8, roughness: 0.2 });
+                    const car = new THREE.Mesh(carGeo, carMat);
+                    car.position.set(rx, baseY + 0.38, rz);
+                    threeHouseGroup.add(car);
+                }
+            });
+        }
+
+        // Inspector Updates
+        function updateInspector() {
+            const noSelection = document.getElementById('no-selection-msg');
+            const editorForm = document.getElementById('room-editor-form');
+
+            if (!selectedRoomId) {
+                noSelection.classList.remove('hidden');
+                editorForm.classList.add('hidden');
+                return;
+            }
+
+            const room = currentPlan.rooms.find(r => r.id === selectedRoomId);
+            if (!room) {
+                noSelection.classList.remove('hidden');
+                editorForm.classList.add('hidden');
+                return;
+            }
+
+            noSelection.classList.add('hidden');
+            editorForm.classList.remove('hidden');
+
+            document.getElementById('prop-name').value = room.name;
+            document.getElementById('prop-type').value = room.type;
+            document.getElementById('prop-level').value = room.level || 1;
+            document.getElementById('prop-material').value = room.material || 'stucco';
+
+            const levelBadge = document.getElementById('inspector-level-indicator');
+            if (levelBadge) {
+                levelBadge.innerText = (room.level === 2) ? 'Level 2 (Upper)' : 'Level 1 (Ground)';
+                levelBadge.className = (room.level === 2) ? 'text-[10px] font-bold px-2 py-0.5 bg-purple-100 text-purple-800 rounded' : 'text-[10px] font-bold px-2 py-0.5 bg-blue-100 text-blue-800 rounded';
+            }
+
+            if (unitMode === 'metric') {
+                document.getElementById('prop-width').value = (room.width / 35).toFixed(1);
+                document.getElementById('prop-height').value = (room.height / 35).toFixed(1);
+            } else {
+                document.getElementById('prop-width').value = Math.round(room.width / 12);
+                document.getElementById('prop-height').value = Math.round(room.height / 12);
+            }
+
+            if (typeof feather !== 'undefined') feather.replace();
+        }
+
+        function updateSelectedRoomProp(prop, val) {
+            if (!selectedRoomId) return;
+            const room = currentPlan.rooms.find(r => r.id === selectedRoomId);
+            if (!room) return;
+            room[prop] = val;
+            draw2DBlueprint();
+            updateStats();
+            if (viewMode === '3d') update3DHouse();
+        }
+
+        function updateRoomDimension(dim, val) {
+            if (!selectedRoomId) return;
+            const room = currentPlan.rooms.find(r => r.id === selectedRoomId);
+            if (!room) return;
+            const num = parseFloat(val);
+            if (isNaN(num) || num <= 0) return;
+
+            if (unitMode === 'metric') {
+                room[dim] = Math.round(num * 35);
+            } else {
+                room[dim] = Math.round(num * 12);
+            }
+            draw2DBlueprint();
+            updateStats();
+            if (viewMode === '3d') update3DHouse();
+        }
+
+        function setRoomColor(color, labelColor) {
+            if (!selectedRoomId) return;
+            const room = currentPlan.rooms.find(r => r.id === selectedRoomId);
+            if (!room) return;
+            room.color = color;
+            room.labelColor = labelColor;
+            draw2DBlueprint();
+            showToast('Color updated');
+        }
+
+        function deleteSelectedRoom() {
+            if (!selectedRoomId) return;
+            currentPlan.rooms = currentPlan.rooms.filter(r => r.id !== selectedRoomId);
+            selectedRoomId = null;
+            updateInspector();
+            updateStats();
+            draw2DBlueprint();
+            if (viewMode === '3d') update3DHouse();
+            showToast('Room removed');
+        }
+
+        function updateStats() {
+            let maxX = 0, maxY = 0, totalGroundM2 = 0, totalUpperM2 = 0;
+            let levelsSet = new Set();
+
+            currentPlan.rooms.forEach(r => {
+                maxX = Math.max(maxX, r.x + r.width);
+                maxY = Math.max(maxY, r.y + r.height);
+                const lvl = r.level || 1;
+                levelsSet.add(lvl);
+
+                const wM = r.width / 35;
+                const hM = r.height / 35;
+                const m2 = wM * hM;
+
+                if (lvl === 2) totalUpperM2 += m2;
+                else totalGroundM2 += m2;
+            });
+
+            const totalM2 = Math.round(totalGroundM2 + totalUpperM2);
+            const totalSqft = Math.round(totalM2 * 10.7639);
+            const widthM = Math.round(maxX / 35);
+            const lengthM = Math.round(maxY / 35);
+
+            document.getElementById('stat-area').innerText = `${totalM2.toLocaleString()} m² (${totalSqft.toLocaleString()} sq ft)`;
+            document.getElementById('stat-dimensions').innerText = `${widthM}m × ${lengthM}m`;
+            document.getElementById('stat-rooms-count').innerText = `${currentPlan.rooms.length} Rooms • ${levelsSet.size} Level${levelsSet.size > 1 ? 's' : ''}`;
+        }
+
+        function addRoom(type, color, labelColor, width = 180, height = 160, material = 'stucco') {
+            const newId = 'room-' + Date.now();
+            const count = currentPlan.rooms.filter(r => r.type === type).length + 1;
+            const name = count > 1 ? `${type} ${count}` : type;
+
+            const spawnX = Math.round(((-panOffset.x + canvas2d.width / 2) / zoom - width / 2) / 10) * 10;
+            const spawnY = Math.round(((-panOffset.y + canvas2d.height / 2) / zoom - height / 2) / 10) * 10;
+            const assignedLevel = (currentLevelFilter === 2) ? 2 : 1;
+
+            const newRoom = {
+                id: newId,
+                type: type,
+                name: name,
+                level: assignedLevel,
+                material: material,
+                x: Math.max(40, spawnX),
+                y: Math.max(40, spawnY),
+                width: width,
+                height: height,
+                color: color,
+                labelColor: labelColor
+            };
+
+            currentPlan.rooms.push(newRoom);
+            selectedRoomId = newId;
+            updateInspector();
+            updateStats();
+            draw2DBlueprint();
+            if (viewMode === '3d') update3DHouse();
+            showToast(`Added ${name} on Level ${assignedLevel}`);
+        }
+
+        // AI Generator Modal
+        function openAiModal() {
+            document.getElementById('ai-modal').classList.remove('hidden');
+            document.getElementById('ai-loading').classList.add('hidden');
+            if (typeof feather !== 'undefined') feather.replace();
+        }
+
+        function closeAiModal() {
+            document.getElementById('ai-modal').classList.add('hidden');
+        }
+
+        function setAiPrompt(text) {
+            document.getElementById('ai-prompt-input').value = text;
+        }
+
+        async function generateAiFloorplan() {
+            const prompt = document.getElementById('ai-prompt-input').value.trim();
+            if (!prompt) {
+                alert('Please enter a house description');
+                return;
+            }
+
+            document.getElementById('ai-loading').classList.remove('hidden');
+
+            try {
+                const res = await fetch('/api/generate-blueprint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await res.json();
+                if (data.success && data.rooms) {
+                    currentPlan = {
+                        id: `ai-${Date.now()}`,
+                        title: data.title || 'AI House Plan',
+                        category: data.category || 'South African Contemporary',
+                        totalArea: data.totalArea || `${data.totalM2} m²`,
+                        rooms: data.rooms
+                    };
+
+                    document.getElementById('plan-title-input').value = currentPlan.title;
+                    const badge = document.getElementById('plan-category-badge');
+                    if (badge) badge.innerText = currentPlan.category;
+
+                    selectedRoomId = null;
+                    updateInspector();
+                    updateStats();
+                    draw2DBlueprint();
+                    if (viewMode === '3d') update3DHouse();
+
+                    closeAiModal();
+                    showToast('AI Plan generated successfully!');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error generating floorplan. Please try again.');
+            } finally {
+                document.getElementById('ai-loading').classList.add('hidden');
+            }
+        }
+
+        async function saveCurrentPlan() {
+            try {
+                currentPlan.title = document.getElementById('plan-title-input').value;
+                const res = await fetch('/api/blueprints/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentPlan)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Plan saved to workspace!');
+                }
+            } catch (err) {
+                showToast('Saved locally');
+            }
+        }
+
+        function exportBlueprintImage() {
+            if (viewMode === '2d') {
+                const link = document.createElement('a');
+                link.download = `${currentPlan.title.toLowerCase().replace(/\s+/g, '-')}-blueprint.png`;
+                link.href = canvas2d.toDataURL('image/png');
+                link.click();
+                showToast('Blueprint exported as PNG');
+            } else {
+                const canvas3d = document.getElementById('three-canvas');
+                const link = document.createElement('a');
+                link.download = `${currentPlan.title.toLowerCase().replace(/\s+/g, '-')}-3d-render.png`;
+                link.href = canvas3d.toDataURL('image/png');
+                link.click();
+                showToast('3D Render exported as PNG');
+            }
+        }
+
+        function zoomCanvas(factor) {
+            zoom = Math.max(0.4, Math.min(2.5, zoom * factor));
+            draw2DBlueprint();
+        }
+
+        function resetCanvasView() {
+            zoom = 0.9;
+            panOffset = { x: 40, y: 30 };
+            draw2DBlueprint();
+        }
+
+        function confirmClearCanvas() {
+            if (confirm('Clear all rooms from the blueprint?')) {
+                currentPlan.rooms = [];
+                selectedRoomId = null;
+                updateInspector();
+                updateStats();
+                draw2DBlueprint();
+                if (viewMode === '3d') update3DHouse();
+                showToast('Blueprint cleared');
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-msg');
+            msgEl.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

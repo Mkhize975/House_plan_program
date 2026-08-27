@@ -1,0 +1,8 @@
+{
+  "name": "DreamDwell - 3D House Plan Generator",
+  "description": "Interactive 3D house plan generator, blueprint editor, and architectural visualizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

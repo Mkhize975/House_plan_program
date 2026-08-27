@@ -1,0 +1,17 @@
+{
+  "name": "house-plan-program",
+  "version": "1.0.0",
+  "description": "DreamDwell - 3D House Plan Generator",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "echo 'Build complete'",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
